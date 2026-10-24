@@ -4,6 +4,6 @@
  */
 export async function seed(): Promise<never> {
   throw new Error(
-    'Use apps/api/scripts/seed-cli.mjs or AUTO_SEED=true (SeedService). See docs/07-dev-guide.md §6',
+    'Use apps/api/scripts/seed-cli.mjs or AUTO_SEED=true (SeedService). See README (本地开发)',
   )
 }

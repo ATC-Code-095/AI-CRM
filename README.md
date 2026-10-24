@@ -375,28 +375,11 @@ pnpm test:e2e
 
 ## 文档地图
 
-| 顺序 | 文件 | 内容 |
-|------|------|------|
-| 0 | [docs/00-product-brief.md](docs/00-product-brief.md) | 产品定位、对标矩阵、MVP 边界 |
-| 1 | [docs/01-tech-stack.md](docs/01-tech-stack.md) | 技术栈锁定、仓库结构、全局约定 |
-| 2 | [docs/02-architecture.md](docs/02-architecture.md) | 系统架构、鉴权、多租户、模块边界 |
-| 3 | [docs/03-domain-model.md](docs/03-domain-model.md) | 领域模型、ER 关系、状态机 |
-| 4 | [docs/04-data-dictionary.md](docs/04-data-dictionary.md) | 全量实体字段字典 |
-| 5 | [docs/05-api-conventions.md](docs/05-api-conventions.md) | REST 约定、错误码、分页、鉴权 |
-| 6 | [docs/06-ui-spec.md](docs/06-ui-spec.md) | 信息架构、页面规格、组件约定 |
-| 7 | [docs/07-dev-guide.md](docs/07-dev-guide.md) | **开发规范**：流程、完成标准、代码与测试要求 |
-| 8 | [docs/08-milestones.md](docs/08-milestones.md) | 里程碑、任务切片 |
-| 9 | [docs/09-acceptance.md](docs/09-acceptance.md) | 验收清单、发布检查单、已知风险 |
-| 10 | [docs/10-i18n-mobile.md](docs/10-i18n-mobile.md) | 多语言 + 手机端规格 |
-| 11 | [docs/11-cross-platform-mobile.md](docs/11-cross-platform-mobile.md) | iOS / Android / 鸿蒙客户端 |
-| 12 | [docs/12-locked-decisions.md](docs/12-locked-decisions.md) | 功能 / 数据库 / 语言冻结决策（最高优先级） |
-| 13 | [docs/13-spec-supplements.md](docs/13-spec-supplements.md) | 规格补遗：单号、幂等、配置、搜索、导入导出、审批、安全、定时任务 |
-| 14 | [docs/14-bootstrap.md](docs/14-bootstrap.md) | 工程骨架与启动 |
-| 15 | [docs/15-launch-checklist.md](docs/15-launch-checklist.md) | 上线检查清单 |
-| 17 | [docs/17-project-status.md](docs/17-project-status.md) | 项目完成度快照 |
-| 18 | [docs/18-mobile-build.md](docs/18-mobile-build.md) | iOS / Android / 鸿蒙实机打包 |
-| — | [docs/modules/](docs/modules/) | 12 个业务模块详细规格 |
-| — | [docs/manual/](docs/manual/) | 用户手册、管理员手册 |
+| 文件 | 内容 |
+|------|------|
+| [docs/manual/](docs/manual/) | 用户手册、管理员手册（中文、English） |
+| [docs/18-mobile-build.md](docs/18-mobile-build.md) | iOS / Android / 鸿蒙 App 打包与推送配置 |
+| [docs/openapi.json](docs/openapi.json) | 接口定义（OpenAPI 3），API 运行时也可在 `/api/v1/docs` 查看 |
 
 ---
 
@@ -421,11 +404,9 @@ M12 平台与AI       开放 API、Webhook、智能助手
 
 ## 开发约定（摘要）
 
-完整规则见 [docs/07-dev-guide.md](docs/07-dev-guide.md)。
-
-- 不得违反 [docs/12-locked-decisions.md](docs/12-locked-decisions.md)（功能范围 / PostgreSQL / TypeScript）
+- 功能范围、数据库（PostgreSQL）与语言（TypeScript）保持不变
 - 不更换技术栈、目录结构、命名风格
-- 用户可见文案必须走 i18n 词典（见 `docs/10-i18n-mobile.md`）
+- 用户可见文案必须走 i18n 词典（`apps/web/src/locales/`，中英文键必须一致）
 - 新页面必须同时支持手机布局（宽度 < 768 底部 Tab）
 - 不发明文档未定义的实体 / 字段 / 接口；不跳过权限校验
 - 不用假数据掩盖未完成接口；未写验收测试不标记完成

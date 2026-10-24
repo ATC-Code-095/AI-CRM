@@ -6,6 +6,7 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 import { APP_ORIGIN, PUSH_KEY } from '../common/Constants';
 import { RawfileServer } from '../common/RawfileServer';
 import { CrmHarmony } from '../common/CrmHarmony';
+import BuildProfile from 'BuildProfile';
 
 const LOCATION_PERMISSIONS: Permissions[] = ['ohos.permission.APPROXIMATELY_LOCATION', 'ohos.permission.LOCATION'];
 
@@ -19,6 +20,18 @@ struct Index {
   private server: RawfileServer = new RawfileServer(this.ctx);
   private bridge: CrmHarmony = new CrmHarmony(this.ctx);
   private pageReady: boolean = false;
+  // 后端为 http:// 时放行混合内容（页面是 https://localhost），由 scripts/sync-mobile.sh 写入的 app-config.json 决定
+  @State mixed: MixedMode = MixedMode.None;
+
+  aboutToAppear(): void {
+    // 调试包允许用 DevTools 检查网页（正式包不开启）
+    if (BuildProfile.DEBUG) {
+      webview.WebviewController.setWebDebuggingAccess(true);
+    }
+    if (this.server.apiIsHttp()) {
+      this.mixed = MixedMode.All;
+    }
+  }
 
   /** 把通知数据交给网页；网页登录并注册 crmOnPushOpen 之前会重试，最多约 30 秒 */
   deliverPush(): void {
@@ -90,8 +103,7 @@ struct Index {
         .domStorageAccess(true)
         .fileAccess(false)
         .geolocationAccess(true)
-        // 后端为 http:// 的内网测试环境需要改为 MixedMode.All；正式环境请使用 HTTPS
-        .mixedMode(MixedMode.None)
+        .mixedMode(this.mixed)
         .javaScriptProxy({
           object: this.bridge,
           name: 'CrmHarmony',

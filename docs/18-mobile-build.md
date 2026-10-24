@@ -10,7 +10,7 @@
 |------|------|------|
 | Android | `apps/mobile/android`（Capacitor 6） | ✅ 已编译调试包并在 Android 37 模拟器运行，可连接后端；Gradle 8.14（支持 JDK 21），包名 `com.itecent.crm`，定位、推送权限已配置。正式包需自己的签名证书 |
 | iOS | `apps/mobile/ios`（Capacitor 6，Swift Package Manager，无需 CocoaPods） | ✅ 已在 Xcode 27 编译，iPhone 模拟器（iOS 27）运行正常，可连接后端；最低系统 iOS 15，已采用 Scene 生命周期（iOS 27 强制要求）；推送、定位 / 相机 / 相册说明已配置。真机与推送需开发者账号签名后验证 |
-| 鸿蒙 NEXT | `apps/harmony`（ArkTS，API 12+） | ✅ 完整工程，已用 DevEco Studio 的 hvigor（HarmonyOS 26 SDK）编译出 HAP，无告警；ArkWeb 内置网页包，推送、定位、拨号、附件选择、通知跳转已实现。安装到真机 / 模拟器需华为账号签名后验证 |
+| 鸿蒙 NEXT | `apps/harmony`（ArkTS，API 12+） | ✅ 已编译并在鸿蒙模拟器运行：登录正式服务器、进入工作台正常，原生桥 `CrmHarmony` 已注入；推送、定位、拨号、附件选择、通知跳转已实现。真机安装需华为账号签名，推送需开通 Push Kit |
 
 已在代码中完成：接口地址可配置（`VITE_API_BASE`）、后端放行 App 来源的跨域请求、分享链接与二维码在 App 内使用服务器地址、App 包不含 Service Worker。以「网页与接口不同源」的方式模拟 App 运行，E2E 11 项全部通过，所有接口请求均发往配置的后端。
 
@@ -127,9 +127,9 @@ VITE_API_BASE=https://crm.example.com bash scripts/sync-mobile.sh
 步骤：
 
 1. 完成第 2 步，网页包会同步到 `entry/src/main/resources/rawfile/www`。
-2. DevEco Studio → **Open** → 选择 `apps/harmony` 目录，等待同步（会自动生成 `oh_modules`、`local.properties` 等，不进 git）。
+2. DevEco Studio → **Open** → 选择 `apps/harmony` 目录（DevEco 不接受含空格的路径，仓库在含空格的目录下时，先建符号链接：`ln -s "$PWD/apps/harmony" ~/DevEcoProjects/ai_crm_harmony`，再打开该链接），等待同步（会自动生成 `oh_modules`、`local.properties` 等，不进 git）。
 3. **签名**：File → Project Structure → **Signing Configs**，登录华为开发者账号后勾选 **Automatically generate signature**（调试用）；正式发布在 AppGallery Connect 申请发布证书与 Profile。签名信息写入 `build-profile.json5`，**含密码，不要提交到公开仓库**。
-4. 连接鸿蒙 NEXT 真机或模拟器，点 ▶ 运行。
+4. 连接鸿蒙 NEXT 真机或模拟器，点 ▶ 运行。模拟器可以不签名：命令行编译后 `hdc install -r entry/build/default/outputs/default/entry-default-unsigned.hap`，再 `hdc shell aa start -a EntryAbility -b com.itecent.crm`。调试包已开启网页调试，可用 `hdc fport` 转发 `webview_devtools_remote_<pid>` 后用 Chrome DevTools 查看。
 
    命令行编译（不签名，用于检查代码）：
    ```bash
@@ -144,7 +144,7 @@ VITE_API_BASE=https://crm.example.com bash scripts/sync-mobile.sh
 说明：
 
 - 网页以 `https://localhost` 地址加载，与 Android App 同源，服务器默认已放行跨域，**不需要**额外配置 `CORS_ORIGIN`。
-- 后端是 `http://` 的内网测试环境时，把 `Index.ets` 中的 `MixedMode.None` 改为 `MixedMode.All`；正式环境请使用 HTTPS。
+- 后端是 `http://` 时，`sync-mobile.sh` 会写入 `rawfile/www/app-config.json`，App 据此自动放行混合内容（与 Android 一致）；正式环境请使用 HTTPS。
 - 推送：在 AppGallery Connect 开通推送服务（第 6.3 节）。App 登录后会请求通知权限并登记设备；点击通知会打开对应单据。
 
 ---

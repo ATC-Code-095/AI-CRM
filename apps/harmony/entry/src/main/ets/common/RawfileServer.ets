@@ -1,5 +1,6 @@
 import { common } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
+import { util } from '@kit.ArkTS';
 import { APP_ORIGIN, RAWFILE_ROOT } from './Constants';
 
 const MIME: Record<string, string> = {
@@ -65,6 +66,22 @@ export class RawfileServer {
     // 没有扩展名的路径是前端路由（如 /accounts/123），返回 index.html
     const last = path.substring(path.lastIndexOf('/') + 1);
     return last.indexOf('.') < 0 ? this.read('/index.html') : null;
+  }
+
+  /** 网页包的后端地址是 http:// 时返回 true（内网测试或尚未配置 HTTPS 的服务器） */
+  apiIsHttp(): boolean {
+    const hit = this.read('/app-config.json');
+    if (!hit) {
+      return false;
+    }
+    try {
+      const decoder = util.TextDecoder.create('utf-8');
+      const text = decoder.decodeToString(new Uint8Array(hit.data));
+      const cfg = JSON.parse(text) as Record<string, string>;
+      return (cfg['apiBase'] ?? '').startsWith('http://');
+    } catch (e) {
+      return false;
+    }
   }
 
   private read(path: string): RawfileHit | null {

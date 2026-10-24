@@ -11,20 +11,34 @@
         "targetSdkVersion": "5.0.0(12)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {
-          "strictMode": { "caseSensitiveCheck": true, "useNormalizedOHMUrl": true }
+          "strictMode": {
+            "caseSensitiveCheck": true,
+            "useNormalizedOHMUrl": true
+          }
         }
       }
     ],
     "buildModeSet": [
-      { "name": "debug" },
-      { "name": "release" }
+      {
+        "name": "debug"
+      },
+      {
+        "name": "release"
+      }
     ]
   },
   "modules": [
     {
       "name": "entry",
       "srcPath": "./entry",
-      "targets": [{ "name": "default", "applyToProducts": ["default"] }]
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
     }
   ]
 }

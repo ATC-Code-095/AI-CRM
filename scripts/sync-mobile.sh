@@ -31,6 +31,9 @@ for dest in "$ROOT/apps/mobile/www" "$ROOT/apps/harmony/entry/src/main/resources
   cp -R "$OUT/." "$dest/"
 done
 
+# 鸿蒙 App 读取它决定是否放行 http:// 后端（与 Android 的 cleartext / allowMixedContent 一致）
+printf '{ "apiBase": "%s" }\n' "$VITE_API_BASE" > "$ROOT/apps/harmony/entry/src/main/resources/rawfile/www/app-config.json"
+
 echo "[3/3] 同步原生工程"
 if [ -d "$ROOT/apps/mobile/android" ] || [ -d "$ROOT/apps/mobile/ios" ]; then
   (cd "$ROOT/apps/mobile" && pnpm exec cap sync)

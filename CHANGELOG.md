@@ -9,7 +9,7 @@
 - Android 工程 Gradle Wrapper 升级到 8.14（可用 JDK 21 编译），调试包已在 Android 37 模拟器运行
 - **iOS 工程**：`apps/mobile/ios`（Capacitor 6，Swift Package Manager，不需要 CocoaPods），已在 Xcode 27 编译并在 iOS 27 模拟器运行。采用 Scene 生命周期（iOS 27 起不采用会启动即崩溃），最低系统 iOS 15。已转发 APNs 注册回调、配置推送能力与后台通知，`Info.plist` 写入定位、相机、相册使用说明，包名 `com.itecent.crm`
 - iOS、Android、鸿蒙 App 图标统一为品牌「智」字图标（原为 Capacitor 默认图标）
-- **鸿蒙 NEXT 完整工程**：`apps/harmony`（ArkTS Stage 模型，API 12+），已用 DevEco Studio 的 hvigor（HarmonyOS 26 SDK）编译出 HAP，无告警。ArkWeb 以 `https://localhost` 加载内置网页包（与 Android 同源，无需改跨域配置），实现 Push Kit 令牌登记、点击通知跳转单据、定位授权、`tel:` 拨号、图片 / 文件附件选择、返回键；网页包同步位置改为 `entry/src/main/resources/rawfile/www`
+- **鸿蒙 NEXT 完整工程**（已在鸿蒙模拟器登录正式服务器运行通过；后端为 http 时自动放行混合内容；调试包开启网页调试）：`apps/harmony`（ArkTS Stage 模型，API 12+），已用 DevEco Studio 的 hvigor（HarmonyOS 26 SDK）编译出 HAP，无告警。ArkWeb 以 `https://localhost` 加载内置网页包（与 Android 同源，无需改跨域配置），实现 Push Kit 令牌登记、点击通知跳转单据、定位授权、`tel:` 拨号、图片 / 文件附件选择、返回键；网页包同步位置改为 `entry/src/main/resources/rawfile/www`
 - **企业微信 / 钉钉 / 飞书通讯录同步与扫码登录**：系统设置 → 开放平台 → 企业微信 / 钉钉 / 飞书，填写企业自建应用凭证（密钥加密存库、不回传）、测试连接。通讯录同步按平台部门树建立 / 更新部门，成员按「已绑定 → 邮箱 → 手机」匹配已有用户并更新部门，新人建为停用账号待管理员启用，平台离职 / 禁用者自动停用（一次超过 30% 时跳过停用防误伤）；可每天 02:30 自动同步。登录页按租户显示扫码登录按钮，扫码后按绑定、邮箱、手机匹配在职用户登录（审计 `LOGIN_SSO_*`）；「我的」页可自行绑定 / 解绑。回调状态 HMAC 签名、10 分钟有效，回调地址限定 `/login/sso/<平台>`。新增迁移 `20261024110000_im_identities`（`UserIdentity` 表、部门外部 ID）
 - **汇率每日自动更新**：多币种卡片可开启「每日自动更新」并选择币种，每天从欧洲央行参考汇率（经 Frankfurter 公开接口，免费无需密钥）拉取，按公布日期生效，也可「立即更新」；同一天手工录入的汇率优先；汇率表增加「来源」列。新增迁移 `20261024100000_rate_source`
 - **鸿蒙推送（华为 Push Kit）**：服务端实现 Push Kit v3 发送（服务账号 PS256 JWT，环境变量 `HMS_SERVICE_ACCOUNT`），鸿蒙设备可登记推送令牌，失效令牌自动清除；原生桥约定 `CrmHarmony.getPushToken` 与 `window.crmOnPushOpen`，`apps/harmony/README.md` 给出 ArkTS 接入示例

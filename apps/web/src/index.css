@@ -1,0 +1,2959 @@
+/* ==========================================================================
+   智销 CRM · 全局视觉体系 v2
+   企业蓝品牌色阶 + 统一功能块栅格 + 自适应表格
+   参考：Salesforce Lightning / HubSpot / 纷享销客 / 销售易 的信息密度与配色
+   ========================================================================== */
+
+:root {
+  /* ---- 品牌色阶（主色 #2F6BFF，见 docs/06-ui-spec.md §3） ---- */
+  --crm-brand-50: #eef4ff;
+  --crm-brand-100: #dfe9ff;
+  --crm-brand-200: #c3d6ff;
+  --crm-brand-300: #97b6ff;
+  --crm-brand-400: #5f8dff;
+  --crm-brand-500: #2f6bff;
+  --crm-brand-600: #1f56e0;
+  --crm-brand-700: #1a45b8;
+  --crm-brand-800: #16378f;
+  --crm-accent: var(--crm-brand-500);
+  --crm-accent-2: var(--crm-brand-400);
+  --crm-accent-soft: rgba(47, 107, 255, 0.1);
+
+  /* ---- 语义色 ---- */
+  --crm-success: #22a06b;
+  --crm-success-soft: rgba(34, 160, 107, 0.12);
+  --crm-warn: #f59e0b;
+  --crm-warn-soft: rgba(245, 158, 11, 0.14);
+  --crm-danger: #e5484d;
+  --crm-danger-soft: rgba(229, 72, 77, 0.12);
+  --crm-info: #0ea5e9;
+  --crm-info-soft: rgba(14, 165, 233, 0.12);
+  --crm-violet: #7c5cf0;
+  --crm-violet-soft: rgba(124, 92, 240, 0.12);
+
+  /* ---- 中性色 ---- */
+  --crm-bg: #f5f6f7;
+  --crm-bg-soft: #fafbfc;
+  --crm-card: #ffffff;
+  --crm-ink: #1f2329;
+  --crm-ink-2: #41464e;
+  --crm-muted: #646a73;
+  --crm-muted-2: #8b919a;
+  --crm-border: #e8ecf2;
+  --crm-border-strong: #dee0e3;
+
+  /* ---- 形状 ---- */
+  --crm-radius: 12px;
+  --crm-radius-sm: 8px;
+  --crm-radius-xs: 6px;
+  --crm-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 6px 16px -12px rgba(16, 24, 40, 0.16);
+  --crm-shadow-hover: 0 2px 6px rgba(16, 24, 40, 0.06), 0 14px 28px -18px rgba(16, 24, 40, 0.28);
+
+  /* ---- 版式 / 结构尺寸（功能块统一宽高的唯一来源） ---- */
+  --crm-header-h: 56px;
+  --crm-statusbar-h: 28px;
+  --crm-sider-w: 236px;
+  --crm-gap: 16px;
+  --crm-panel-head-h: 46px;
+  --crm-panel-pad: 14px;
+  --crm-block-sm: 132px; /* 指标块：KPI / 迷你统计 */
+  --crm-block-md: 320px; /* 标准功能块：列表 / 表格 / 条形图 */
+  --crm-block-lg: 392px; /* 大功能块：多行表格 / 组合图 */
+  --crm-block-report: 360px; /* 报表页功能块统一高度 */
+
+  --crm-sider-bg: #0d1729;
+  --crm-sider-bg-2: #0b1322;
+  --crm-topbar-bg: #ffffff;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--crm-bg);
+  color: var(--crm-ink);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    system-ui,
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   1. 应用壳
+   ========================================================================== */
+.crm-shell.ant-layout {
+  background: var(--crm-bg);
+  min-height: 100vh;
+  align-items: stretch;
+}
+
+.crm-sider.ant-layout-sider {
+  background: linear-gradient(180deg, #0b1224 0%, #0a0f1c 100%);
+  box-shadow: 4px 0 24px rgba(2, 6, 23, 0.18);
+  border-right: 1px solid rgba(148, 163, 184, 0.08);
+  z-index: 20;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.crm-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 16px 14px;
+  color: #fff;
+  position: relative;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.crm-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, var(--crm-brand-400) 0%, var(--crm-brand-600) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 17px;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 8px 18px -10px rgba(47, 107, 255, 1);
+}
+
+.crm-brand-text {
+  min-width: 0;
+  flex: 1;
+}
+
+.crm-brand-name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  line-height: 1.25;
+  color: #f8fafc;
+}
+
+.crm-brand-sub {
+  font-size: 10px;
+  opacity: 0.5;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+
+.crm-collapse-btn,
+.crm-expand-btn {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.crm-collapse-btn:hover,
+.crm-expand-btn:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.crm-expand-btn {
+  margin: 0 auto 8px;
+  display: block;
+}
+
+/* 侧栏菜单搜索 */
+.crm-menu-search {
+  padding: 12px 12px 6px;
+  flex-shrink: 0;
+}
+
+.crm-menu-hint {
+  margin-top: 6px;
+  font-size: 10px;
+  color: rgba(148, 163, 184, 0.85);
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+}
+
+.crm-menu-search .ant-input-affix-wrapper {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  border-radius: 10px !important;
+  color: #fff;
+  box-shadow: none !important;
+}
+
+.crm-menu-search .ant-input-affix-wrapper input {
+  color: #fff !important;
+}
+
+.crm-menu-search .ant-input-affix-wrapper input::placeholder {
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+
+.crm-menu-search .ant-input-prefix,
+.crm-menu-search .ant-input-clear-icon {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.crm-menu-hit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.crm-menu-hit em {
+  font-style: normal;
+  font-size: 10px;
+  opacity: 0.55;
+}
+
+/* 侧栏菜单独立滚动，保证底部菜单可点 */
+.crm-menu-wrap {
+  flex: 1 1 auto;
+  height: calc(100vh - 92px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  position: relative;
+  z-index: 1;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+
+.crm-menu-wrap::-webkit-scrollbar {
+  width: 6px;
+}
+
+.crm-menu-wrap::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 8px;
+}
+
+.crm-menu-wrap .ant-menu {
+  border: none;
+  width: 100%;
+}
+
+/* 菜单：分组标题 + 圆角胶囊项（Linear / Salesforce Lightning 风格） */
+.crm-menu.ant-menu-dark {
+  background: transparent;
+  padding: 6px 10px 20px;
+  border-right: none;
+}
+
+/* 图标/文字对比度加强 */
+.crm-menu.ant-menu-dark .ant-menu-item .ant-menu-item-icon,
+.crm-menu.ant-menu-dark .ant-menu-submenu-title .anticon {
+  opacity: 1 !important;
+  color: rgba(226, 232, 240, 0.95) !important;
+  font-size: 16px !important;
+}
+
+.crm-menu.ant-menu-dark .ant-menu-item,
+.crm-menu.ant-menu-dark .ant-menu-submenu-title {
+  color: rgba(241, 245, 249, 0.92) !important;
+  font-size: 13.5px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+}
+
+.crm-menu.ant-menu-dark .ant-menu-item:hover .ant-menu-item-icon,
+.crm-menu.ant-menu-dark .ant-menu-item-selected .ant-menu-item-icon {
+  color: #fff !important;
+  opacity: 1 !important;
+}
+
+/* 分组标题 */
+.ant-menu-item-group-title {
+  font-size: 11px !important;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.85) !important;
+  padding-left: 10px !important;
+  padding-right: 8px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  margin-top: 14px !important;
+  margin-bottom: 2px !important;
+  background: transparent !important;
+}
+
+.ant-menu-item-group:first-child .ant-menu-item-group-title {
+  margin-top: 4px !important;
+}
+
+/* 菜单项 */
+.crm-menu.ant-menu-dark .ant-menu-item,
+.crm-menu.ant-menu-dark .ant-menu-submenu-title {
+  height: 40px;
+  line-height: 40px;
+  margin: 3px 0;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(226, 232, 240, 0.82);
+  padding-inline: 12px !important;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+  position: relative;
+}
+
+.crm-menu.ant-menu-dark .ant-menu-item:hover,
+.crm-menu.ant-menu-dark .ant-menu-submenu-title:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+
+.crm-menu.ant-menu-dark .ant-menu-item .ant-menu-item-icon,
+.crm-menu.ant-menu-dark .ant-menu-submenu-title .ant-menu-item-icon,
+.crm-menu.ant-menu-dark .ant-menu-submenu-title .anticon {
+  font-size: 17px;
+  opacity: 0.78;
+  margin-right: 10px;
+  transition: opacity 0.15s ease;
+}
+
+.crm-menu.ant-menu-dark .ant-menu-item:hover .ant-menu-item-icon,
+.crm-menu.ant-menu-dark .ant-menu-item-selected .ant-menu-item-icon {
+  opacity: 1;
+}
+
+/* 选中态：左侧色条 + 浅底（不用整块高饱和） */
+.crm-menu.ant-menu-dark .ant-menu-item-selected {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--crm-accent) 22%, transparent) 0%,
+    color-mix(in srgb, var(--crm-accent) 10%, transparent) 100%
+  ) !important;
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 0 var(--crm-accent);
+}
+
+.crm-menu.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* 二级菜单 */
+.crm-menu.ant-menu-dark .ant-menu-sub.ant-menu-inline {
+  background: transparent;
+  margin: 2px 0 6px;
+  padding: 0 0 0 18px;
+  border-left: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 0;
+}
+
+.crm-menu.ant-menu-dark .ant-menu-sub .ant-menu-item {
+  height: 34px;
+  line-height: 34px;
+  margin: 2px 0;
+  font-size: 12.5px;
+  border-radius: 8px;
+  color: rgba(226, 232, 240, 0.72);
+  padding-inline: 12px !important;
+}
+
+.crm-menu.ant-menu-dark .ant-menu-sub .ant-menu-item-selected {
+  background: rgba(47, 107, 255, 0.18) !important;
+  color: #fff !important;
+  box-shadow: inset 2px 0 0 0 var(--crm-brand-400);
+}
+
+.crm-menu.ant-menu-inline-collapsed > .ant-menu-item,
+.crm-menu.ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title {
+  padding-inline: calc(50% - 17px) !important;
+}
+
+.ant-menu-item-group-title {
+  font-size: 11px !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.85) !important;
+  padding-left: 10px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  margin-top: 14px !important;
+  margin-bottom: 2px !important;
+}
+
+/* ==========================================================================
+   2. 顶栏（浅色 · 品牌点缀）
+   ========================================================================== */
+.crm-header.ant-layout-header {
+  height: var(--crm-header-h);
+  line-height: normal;
+  padding: 0 16px;
+  background: var(--crm-topbar-bg);
+  border-bottom: 1px solid var(--crm-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 15;
+}
+
+.crm-header-left {
+  min-width: 0;
+  flex: 1;
+}
+
+.crm-header-center {
+  flex: 0 1 340px;
+}
+
+.crm-header-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.crm-crumbs {
+  display: flex;
+  align-items: center;
+  font-size: 12.5px;
+  color: var(--crm-muted);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.crm-crumb-link {
+  color: var(--crm-muted);
+  text-decoration: none;
+}
+
+.crm-crumb-link:hover {
+  color: var(--crm-accent);
+}
+
+.crm-crumb-sep {
+  margin: 0 8px;
+  color: var(--crm-muted-2);
+}
+
+.crm-crumb-current {
+  color: var(--crm-ink);
+  font-weight: 600;
+}
+
+.crm-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 10px 3px 3px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.crm-user:hover {
+  background: var(--crm-bg);
+}
+
+.crm-user-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--crm-ink);
+}
+
+/* ==========================================================================
+   3. 内容区 / 状态栏 / 移动底栏
+   ========================================================================== */
+.crm-content {
+  margin: 16px 20px 24px;
+  padding-bottom: 24px;
+  min-width: 0;
+  flex: 1;
+  overflow-x: hidden;
+}
+
+.crm-shell > .ant-layout {
+  min-width: 0;
+  min-height: 100vh;
+}
+
+.crm-statusbar {
+  height: var(--crm-statusbar-h);
+  background: #eef1f6;
+  color: var(--crm-muted);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-top: 1px solid var(--crm-border);
+  flex-shrink: 0;
+  z-index: 12;
+}
+
+.crm-mobile-tabs.ant-layout-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--crm-border);
+  display: flex;
+  z-index: 100;
+}
+
+.crm-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--crm-muted);
+  font-size: 11px;
+}
+
+.crm-tab.active {
+  color: var(--crm-accent);
+  font-weight: 600;
+}
+
+.crm-tab-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .crm-content {
+    margin: 12px 12px 80px;
+  }
+}
+
+/* ==========================================================================
+   3.1 手机端卡片列表（<768 列表降级）
+   ========================================================================== */
+.crm-mobile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.crm-mobile-card {
+  position: relative;
+  display: block;
+  padding: 12px 34px 12px 14px;
+  background: var(--crm-card);
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  box-shadow: var(--crm-shadow);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.crm-mobile-card:active {
+  border-color: var(--crm-brand-300);
+  background: var(--crm-brand-50);
+}
+
+.crm-mobile-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.crm-mobile-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--crm-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crm-mobile-card-sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--crm-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crm-mobile-card-amount {
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--crm-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.crm-mobile-card-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 10px;
+  margin-top: 8px;
+}
+
+.crm-mobile-card-field {
+  display: flex;
+  gap: 6px;
+  font-size: 12px;
+  min-width: 0;
+}
+
+.crm-mobile-card-field-label {
+  color: var(--crm-muted-2);
+  flex-shrink: 0;
+}
+
+.crm-mobile-card-field-value {
+  color: var(--crm-ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crm-mobile-card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--crm-border);
+}
+
+.crm-mobile-card-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--crm-muted-2);
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   12.2 日历（月视图 + 议程）
+   ========================================================================== */
+.crm-cal-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: var(--crm-gap);
+  padding: 10px 14px;
+  background: var(--crm-card);
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  box-shadow: var(--crm-shadow);
+}
+
+/* 月历与日程上下排列：两个功能块同为通栏等宽、470px 等高 */
+.crm-cal-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--crm-gap);
+  align-items: stretch;
+}
+
+.crm-cal-month,
+.crm-cal-agenda {
+  height: 470px;
+  min-height: 470px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 月历与日程同宽等高：日程块内部滚动，避免整页被 80+ 条日程撑长 */
+.crm-cal-month > .ant-card-body,
+.crm-cal-agenda > .ant-card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.crm-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  min-width: 0;
+}
+
+.crm-cal-weekday {
+  text-align: center;
+  font-size: 11px;
+  color: var(--crm-muted-2);
+  padding-bottom: 2px;
+}
+
+.crm-cal-cell {
+  min-height: 58px;
+  padding: 4px;
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius-xs);
+  background: var(--crm-card);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  overflow: hidden;
+}
+
+.crm-cal-cell.empty {
+  border: 1px dashed transparent;
+  background: transparent;
+  cursor: default;
+}
+
+.crm-cal-cell:hover {
+  border-color: var(--crm-brand-300);
+}
+
+.crm-cal-cell.weekend {
+  background: var(--crm-bg-soft);
+}
+
+.crm-cal-cell.today {
+  border-color: var(--crm-accent);
+  box-shadow: inset 0 0 0 1px var(--crm-accent);
+}
+
+.crm-cal-cell.selected {
+  background: var(--crm-brand-50);
+}
+
+.crm-cal-date {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--crm-ink-2);
+  margin-bottom: 2px;
+}
+
+.crm-cal-cell.today .crm-cal-date > span:first-child {
+  color: var(--crm-accent);
+  font-weight: 700;
+}
+
+.crm-cal-count {
+  min-width: 14px;
+  height: 14px;
+  padding: 0 4px;
+  border-radius: 7px;
+  background: var(--crm-accent-soft);
+  color: var(--crm-accent);
+  font-size: 10px;
+  line-height: 14px;
+  text-align: center;
+}
+
+.crm-cal-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.crm-cal-chip {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--crm-brand-50);
+  color: var(--crm-brand-700);
+  font-size: 10px;
+  line-height: 16px;
+  text-decoration: none;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.crm-cal-chip.done {
+  background: var(--crm-success-soft);
+  color: #14624a;
+  text-decoration: line-through;
+}
+
+.crm-cal-chip-time {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.crm-cal-chip-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.crm-cal-more {
+  font-size: 10px;
+  color: var(--crm-muted-2);
+  padding-left: 2px;
+}
+
+.crm-cal-agenda-day {
+  margin-bottom: 12px;
+}
+
+.crm-cal-agenda-date {
+  font-size: 12px;
+  color: var(--crm-ink-2);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.crm-cal-agenda-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  padding: 5px 0;
+  border-bottom: 1px dashed var(--crm-border);
+}
+
+@media (max-width: 1100px) {
+  .crm-cal-cell {
+    min-height: 48px;
+  }
+
+  .crm-cal-month,
+  .crm-cal-agenda {
+    height: auto;
+    min-height: 0;
+  }
+}
+
+/* ==========================================================================
+   12.3 AI 助手抽屉
+   ========================================================================== */
+.crm-ai-section {
+  padding: 10px 12px;
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius-sm);
+  background: var(--crm-bg-soft);
+  margin-bottom: 12px;
+}
+
+.crm-ai-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.crm-ai-card {
+  border: 1px solid var(--crm-border);
+  border-left: 3px solid var(--crm-accent);
+  border-radius: var(--crm-radius-sm);
+  background: var(--crm-card);
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: var(--crm-shadow);
+}
+
+.crm-ai-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.crm-ai-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12.5px;
+  color: var(--crm-ink-2);
+  line-height: 1.8;
+}
+
+.crm-ai-script {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-radius: var(--crm-radius-xs);
+  background: var(--crm-brand-50);
+  color: var(--crm-brand-700);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+/* 我的关注 胶囊 */
+.crm-star-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 4px 2px 2px;
+  border: 1px solid var(--crm-border);
+  border-radius: 999px;
+  background: var(--crm-card);
+  font-size: 12.5px;
+}
+
+.crm-star-chip a {
+  color: var(--crm-ink);
+  padding: 0 4px;
+}
+
+.crm-star-chip a:hover {
+  color: var(--crm-accent);
+}
+
+/* 跟进计划（Cadence） */
+.crm-cadence-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--crm-border);
+}
+
+.crm-cadence-row:last-child {
+  border-bottom: none;
+}
+
+.crm-cadence-steps-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 8px;
+}
+
+.crm-cadence-steps-head > .crm-muted {
+  flex: 1;
+}
+
+.crm-cadence-day {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.crm-cadence-day-prefix {
+  font-size: 11px;
+  color: var(--crm-muted);
+  font-family: ui-monospace, Menlo, monospace;
+}
+
+.crm-cadence-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.crm-cadence-step {
+  display: grid;
+  grid-template-columns: 110px 100px minmax(0, 1fr) minmax(0, 1fr) 32px;
+  gap: 8px;
+  align-items: center;
+}
+
+.crm-cadence-shared .ant-card-body {
+  max-height: 268px;
+  overflow: auto;
+}
+
+/* 快捷键帮助 */
+.crm-shortcut-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.crm-shortcut-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.crm-shortcut-keys {
+  display: inline-flex;
+  gap: 4px;
+  min-width: 92px;
+}
+
+.crm-kbd.ant-tag {
+  font-family: ui-monospace, Menlo, monospace;
+  background: var(--crm-bg);
+  border: 1px solid var(--crm-border-strong);
+  color: var(--crm-ink-2);
+  border-radius: 5px;
+  padding: 0 6px;
+  margin: 0;
+  font-size: 11px;
+}
+
+/* 通知中心未读圆点 */
+.crm-notif-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--crm-accent);
+  flex-shrink: 0;
+}
+
+/* 「我的」页 */
+.crm-me-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 16px;
+  border-radius: var(--crm-radius);
+  background: linear-gradient(120deg, var(--crm-brand-700) 0%, var(--crm-brand-500) 100%);
+  color: #fff;
+  margin-bottom: var(--crm-gap);
+}
+
+.crm-me-name {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.crm-me-sub {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.crm-me-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--crm-border);
+  font-size: 13px;
+}
+
+.crm-me-row:last-child {
+  border-bottom: none;
+}
+
+.crm-theme-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+}
+
+.crm-theme-dot.active {
+  border-color: var(--crm-ink);
+}
+
+/* ==========================================================================
+   4. 卡片（功能块）基础外观
+   ========================================================================== */
+.ant-card {
+  border-radius: var(--crm-radius) !important;
+  box-shadow: var(--crm-shadow) !important;
+  border: 1px solid var(--crm-border) !important;
+  background: var(--crm-card);
+  overflow: hidden;
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.ant-card:hover {
+  box-shadow: var(--crm-shadow-hover) !important;
+}
+
+.ant-card .ant-card-head {
+  min-height: var(--crm-panel-head-h);
+  height: var(--crm-panel-head-h);
+  padding: 0 var(--crm-panel-pad);
+  border-bottom: 1px solid var(--crm-border);
+  background: linear-gradient(180deg, #fcfdff 0%, #ffffff 100%);
+}
+
+.ant-card .ant-card-head-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--crm-ink);
+  letter-spacing: 0.01em;
+  padding: 0;
+}
+
+.ant-card .ant-card-extra {
+  font-size: 12px;
+}
+
+.ant-card .ant-card-body {
+  padding: var(--crm-panel-pad);
+}
+
+.ant-card .ant-card-body::before,
+.ant-card .ant-card-body::after {
+  display: none;
+}
+
+/* ==========================================================================
+   5. 功能块栅格：宽度等高统一（唯一权威实现）
+   --------------------------------------------------------------------------
+   用法：<div className="crm-grid crm-cols-3 crm-h-md"> <Card .../> </div>
+   - crm-cols-N：同行 N 等宽（minmax(0,1fr)，宽度绝对一致）
+   - crm-h-sm/md/lg：行高统一为 132 / 320 / 392
+   - 未指定行高时同行自动等高（stretch），跨行按内容
+   ========================================================================== */
+.crm-grid {
+  display: grid;
+  gap: var(--crm-gap);
+  align-items: stretch;
+  margin-bottom: var(--crm-gap);
+}
+
+.crm-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.crm-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.crm-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.crm-cols-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.crm-h-sm {
+  grid-auto-rows: var(--crm-block-sm);
+}
+
+.crm-h-md {
+  grid-auto-rows: var(--crm-block-md);
+}
+
+.crm-h-tile {
+  grid-auto-rows: 244px;
+}
+
+.crm-h-lg {
+  grid-auto-rows: var(--crm-block-lg);
+}
+
+.crm-h-auto {
+  grid-auto-rows: auto;
+}
+
+.crm-grid > * {
+  min-width: 0;
+  height: 100%;
+}
+
+/* 栅格内卡片：统一内部结构，内容超出时块内滚动（不撑高页面） */
+.crm-grid > .ant-card,
+.crm-grid > * > .ant-card,
+.crm-block {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.crm-grid > .ant-card > .ant-card-body,
+.crm-grid > * > .ant-card > .ant-card-body,
+.crm-block > .ant-card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* 全宽单块（表格/图表）：内容自适应，高度按行高 token 一致 */
+.crm-block-span {
+  grid-column: 1 / -1;
+}
+
+/* 全宽功能块：统一高度（工作台简报 / 日报 / 表格块） */
+.crm-panel-fixed {
+  height: var(--crm-block-md);
+  min-height: var(--crm-block-md);
+  display: flex;
+  flex-direction: column;
+}
+
+.crm-panel-fixed.crm-panel-sm {
+  height: var(--crm-block-sm);
+  min-height: var(--crm-block-sm);
+}
+
+.crm-panel-fixed.crm-block-lg {
+  height: var(--crm-block-lg);
+  min-height: var(--crm-block-lg);
+}
+
+.crm-panel-fixed > .ant-card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+@media (max-width: 860px) {
+  .crm-panel-fixed,
+  .crm-panel-fixed.crm-panel-sm {
+    height: auto;
+    min-height: 0;
+  }
+}
+
+/* 工作台欢迎横幅 */
+.crm-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(105deg, var(--crm-brand-700) 0%, var(--crm-brand-500) 62%, var(--crm-brand-400) 100%);
+  border-radius: var(--crm-radius);
+  padding: 18px 20px;
+  color: #fff;
+  margin-bottom: var(--crm-gap);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-shadow: 0 10px 26px -18px rgba(31, 86, 224, 0.9);
+}
+
+.crm-hero::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.09);
+  pointer-events: none;
+}
+
+.crm-hero .crm-hero-sub {
+  font-size: 11px;
+  opacity: 0.85;
+  letter-spacing: 0.4px;
+}
+
+.crm-hero .crm-hero-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.crm-hero .crm-hero-meta {
+  font-size: 12px;
+  opacity: 0.92;
+  margin-top: 4px;
+}
+
+/* 分栏（左内容 + 右辅助） */
+.crm-split {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+  gap: var(--crm-gap);
+  align-items: stretch;
+}
+
+@media (max-width: 1280px) {
+  .crm-cols-5 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1180px) {
+  .crm-cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .crm-cols-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .crm-cols-2,
+  .crm-cols-3,
+  .crm-cols-4,
+  .crm-cols-5,
+  .crm-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .crm-h-sm,
+  .crm-h-md,
+  .crm-h-lg,
+  .crm-h-tile {
+    grid-auto-rows: auto;
+  }
+}
+
+
+/* 详情页等功能块：同行等高，不强制固定高度 */
+.ant-row > .ant-col > .ant-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-row > .ant-col > .ant-card > .ant-card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.ant-row > .ant-col > .ant-card > .ant-card-body > * {
+  max-width: 100%;
+}
+
+/* ---- 报表页：所有功能块同宽等高（--crm-block-report），块内滚动 ---- */
+.crm-reports .ant-card,
+.crm-reports .ant-row > .ant-col > .ant-card {
+  display: flex;
+  flex-direction: column;
+  height: var(--crm-block-report) !important;
+  min-height: var(--crm-block-report);
+  max-height: var(--crm-block-report);
+}
+
+.crm-reports .ant-card > .ant-card-body,
+.crm-reports .ant-row > .ant-col > .ant-card > .ant-card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.crm-reports .ant-card.crm-block-lg,
+.crm-reports .ant-row > .ant-col > .ant-card.crm-block-lg {
+  height: var(--crm-block-lg) !important;
+  min-height: var(--crm-block-lg);
+  max-height: var(--crm-block-lg);
+}
+
+.crm-reports .ant-card.crm-block-fit,
+.crm-reports .ant-row > .ant-col > .ant-card.crm-block-fit {
+  height: auto !important;
+  min-height: 0;
+  max-height: none;
+}
+
+@media (max-width: 860px) {
+  .crm-reports .ant-card,
+  .crm-reports .ant-row > .ant-col > .ant-card {
+    height: auto !important;
+    min-height: 0;
+    max-height: none;
+  }
+}
+
+/* ==========================================================================
+   6. KPI 指标块（132px 统一高度）
+   ========================================================================== */
+.crm-kpi {
+  min-height: var(--crm-block-sm);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-left: 3px solid var(--crm-accent) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+}
+
+.crm-kpi .ant-statistic {
+  min-height: 0;
+}
+
+.crm-kpi .ant-card-body {
+  padding: 16px 18px;
+  overflow: visible;
+}
+
+.crm-kpi-gold {
+  border-left-color: var(--crm-warn) !important;
+}
+
+.crm-kpi-green {
+  border-left-color: var(--crm-success) !important;
+}
+
+.crm-kpi-purple {
+  border-left-color: var(--crm-violet) !important;
+}
+
+.crm-kpi-red {
+  border-left-color: var(--crm-danger) !important;
+}
+
+.ant-statistic-title {
+  font-size: 12px !important;
+  color: var(--crm-muted) !important;
+  margin-bottom: 6px !important;
+}
+
+.ant-statistic-content {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.01em;
+}
+
+.ant-statistic-content-value {
+  font-variant-numeric: tabular-nums;
+}
+
+/* KPI 迷你块（工作台/看板顶部指标） */
+.crm-mini-kpi {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  height: 100%;
+  padding: 14px 16px;
+  border-radius: var(--crm-radius);
+  background: var(--crm-card);
+  border: 1px solid var(--crm-border);
+  box-shadow: var(--crm-shadow);
+}
+
+.crm-mini-kpi-label {
+  font-size: 12px;
+  color: var(--crm-muted);
+  margin-bottom: 4px;
+}
+
+.crm-mini-kpi-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--crm-ink);
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.crm-mini-kpi-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   7. 表格
+   ========================================================================== */
+.ant-table-wrapper .ant-table {
+  font-size: 13px;
+  background: transparent;
+}
+
+.ant-table-thead > tr > th {
+  background: #f7f9fc !important;
+  color: var(--crm-ink-2) !important;
+  font-weight: 600 !important;
+  font-size: 12.5px;
+  border-bottom: 1px solid var(--crm-border-strong) !important;
+  white-space: nowrap;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f1f4f9 !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: #f3f7ff !important;
+}
+
+.ant-table-wrapper .ant-table-cell {
+  overflow-wrap: anywhere;
+}
+
+/* 报表/分析表：列宽由 JS 测量后注入（AutoFitTable），此处仅兜底 */
+.crm-autofit table.ant-table {
+  table-layout: fixed !important;
+  width: 100% !important;
+}
+
+.crm-autofit .ant-table-cell {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.crm-autofit .ant-table-cell-num {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.crm-autofit .ant-table-thead > tr > th.ant-table-cell-num,
+.crm-autofit .ant-table-thead > tr > th.ant-table-cell-num .ant-table-column-title {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.crm-autofit table.ant-table {
+  table-layout: fixed !important;
+}
+
+/* 表格容器可横向滚动，保证列不被压没 */
+.ant-table-wrapper .ant-table-content {
+  overflow-x: auto;
+}
+
+/* ---- ERP 网格（Infor 风格列表页）：固定列宽 + 可拖拽 ---- */
+.erp-grid-wrap table.ant-table {
+  table-layout: fixed !important;
+}
+
+.erp-grid-wrap .ant-table-thead > tr > th,
+.erp-grid-wrap .ant-table-tbody > tr > td {
+  white-space: nowrap;
+}
+
+.erp-grid-wrap .ant-table-thead > tr > th.erp-col-sel,
+.erp-grid-wrap .ant-table-tbody > tr > td.erp-col-sel {
+  width: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  height: 40px !important;
+}
+
+/* →编辑 列：默认只显示 →，悬停出「编辑」 */
+.erp-grid-wrap .ant-table-thead > tr > th.erp-col-go,
+.erp-grid-wrap .ant-table-tbody > tr > td.erp-col-go {
+  width: 28px !important;
+  min-width: 28px !important;
+  max-width: 28px !important;
+  padding: 4px 0 !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+}
+
+.erp-row-go {
+  width: 28px !important;
+  height: 22px;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  font-size: 12px;
+  position: relative;
+}
+
+.erp-row-go-label {
+  display: none !important;
+  position: absolute !important;
+  left: 26px;
+  top: 0;
+  z-index: 20;
+  padding: 0 6px;
+  height: 22px;
+  line-height: 22px;
+  background: var(--crm-accent);
+  color: #fff !important;
+  border-radius: 3px;
+  font-size: 11px;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+}
+
+.erp-grid-wrap .ant-table-tbody > tr:hover .erp-row-go-label,
+.erp-row-go:hover .erp-row-go-label {
+  display: inline-block !important;
+}
+
+.erp-row-go:hover {
+  background: var(--crm-accent) !important;
+  color: #fff !important;
+}
+
+.erp-row-go:hover .erp-row-go-arrow {
+  color: #fff;
+}
+
+/* 列表行高统一（勾选/编辑/报表） */
+.erp-grid-wrap .ant-table-tbody > tr > td,
+.crm-reports .ant-table-tbody > tr > td {
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  box-sizing: border-box;
+  overflow: hidden !important;
+}
+
+.erp-grid-wrap .ant-table-tbody > tr,
+.crm-reports .ant-table-tbody > tr {
+  height: 40px !important;
+}
+
+/* ==========================================================================
+   8. 按钮 / 标签 / 表单控件
+   ========================================================================== */
+.ant-btn {
+  border-radius: var(--crm-radius-xs);
+  box-shadow: none;
+  font-weight: 500;
+}
+
+.ant-btn-primary {
+  background: linear-gradient(180deg, var(--crm-brand-500) 0%, var(--crm-brand-600) 100%);
+  border-color: var(--crm-brand-600);
+}
+
+.ant-btn-primary:not(:disabled):hover {
+  background: var(--crm-brand-400) !important;
+  border-color: var(--crm-brand-400) !important;
+}
+
+.ant-btn-default:not(:disabled):hover {
+  color: var(--crm-accent);
+  border-color: var(--crm-brand-300);
+}
+
+.ant-tag {
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.ant-input-affix-wrapper,
+.ant-input,
+.ant-input-number,
+.ant-select-selector,
+.ant-picker {
+  border-radius: var(--crm-radius-xs) !important;
+}
+
+.ant-input-affix-wrapper-focused,
+.ant-input:focus,
+.ant-select-focused .ant-select-selector,
+.ant-picker-focused {
+  box-shadow: 0 0 0 3px var(--crm-accent-soft) !important;
+}
+
+.ant-empty-description {
+  color: var(--crm-muted);
+}
+
+.ant-progress-text {
+  font-size: 12px !important;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.32);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ==========================================================================
+   9. 报表中心布局
+   ========================================================================== */
+.crm-reports-shell .ant-typography {
+  margin-bottom: 0;
+}
+
+.crm-reports-nav {
+  width: 172px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: sticky;
+  top: calc(var(--crm-header-h) + 12px);
+}
+
+.crm-reports-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 40px;
+  padding: 0 12px;
+  border-left: 3px solid transparent;
+  border-radius: var(--crm-radius-sm);
+  background: var(--crm-card);
+  color: var(--crm-ink-2);
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.16s ease;
+  box-shadow: var(--crm-shadow);
+}
+
+.crm-reports-nav-item:hover {
+  transform: translateX(2px);
+  color: var(--crm-accent);
+  box-shadow: var(--crm-shadow-hover);
+}
+
+.crm-reports-nav-item.active {
+  font-weight: 600;
+}
+
+.crm-reports-nav-icon {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+}
+
+/* 报表入口大卡（报表中心首页） */
+.crm-report-tile {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 18px;
+  border-radius: var(--crm-radius);
+  background: var(--crm-card);
+  border: 1px solid var(--crm-border);
+  box-shadow: var(--crm-shadow);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  border-top: 3px solid var(--tile-color, var(--crm-accent));
+}
+
+.crm-report-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--crm-shadow-hover);
+  border-color: var(--crm-brand-200);
+}
+
+.crm-report-tile-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.crm-report-tile-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--crm-ink);
+  margin-bottom: 6px;
+}
+
+.crm-report-tile-desc {
+  font-size: 12.5px;
+  color: var(--crm-muted);
+  line-height: 1.6;
+  flex: 1 1 auto;
+}
+
+.crm-report-tile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+/* ==========================================================================
+   10. ERP 列表外框（Infor LN 风格 · 品牌色对齐）
+   ========================================================================== */
+.erp-list {
+  background: var(--crm-card);
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  overflow: hidden;
+  box-shadow: var(--crm-shadow);
+}
+
+.erp-program-bar {
+  height: 40px;
+  background: linear-gradient(90deg, var(--crm-brand-700) 0%, var(--crm-brand-500) 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  font-size: 12px;
+}
+
+.erp-program-id {
+  background: rgba(255, 255, 255, 0.16);
+  padding: 2px 8px;
+  border-radius: var(--crm-radius-xs);
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.4px;
+}
+
+.erp-program-title {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.erp-program-sub {
+  opacity: 0.75;
+  font-size: 11px;
+}
+
+.erp-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  background: linear-gradient(180deg, #fbfcfe 0%, #f4f7fb 100%);
+  border-bottom: 1px solid var(--crm-border);
+  min-height: 46px;
+  box-sizing: border-box;
+}
+
+.erp-grid {
+  background: var(--crm-card);
+}
+
+.erp-grid .ant-table {
+  font-size: 12.5px;
+}
+
+.erp-grid .ant-table-thead > tr > th {
+  background: #f4f6fa !important;
+  color: var(--crm-ink-2) !important;
+  border-bottom: 1px solid var(--crm-border-strong) !important;
+  border-right: 1px solid #eef1f6;
+  padding: 6px 8px !important;
+  vertical-align: top;
+}
+
+.erp-grid .ant-table-tbody > tr > td {
+  border-right: 1px solid #f4f6fa;
+  padding: 6px 8px !important;
+  /* 固定列宽下长文本裁切，避免文字串到相邻列 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.erp-grid .ant-table-tbody > tr:hover > td {
+  background: #f3f7ff !important;
+}
+
+.erp-grid-status {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  background: #f7f9fc;
+  border-top: 1px solid var(--crm-border);
+}
+
+/* 表头筛选控件 */
+.erp-col-head {
+  cursor: grab;
+  padding-left: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.erp-col-head:active {
+  cursor: grabbing;
+}
+
+.erp-col-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--crm-ink-2);
+  white-space: nowrap;
+}
+
+.erp-drag-grip {
+  color: #b0b4ba;
+  font-size: 13px;
+  line-height: 1;
+  user-select: none;
+  cursor: grab;
+  letter-spacing: 0;
+}
+
+.erp-col-head:hover .erp-drag-grip {
+  color: var(--crm-accent);
+}
+
+.erp-col-filter {
+  width: 100%;
+}
+
+.erp-col-filter .ant-select,
+.erp-col-filter .ant-input {
+  width: 100%;
+}
+
+.ant-table-wrapper .ant-table-thead > tr > th.erp-filter-row,
+.erp-filter-row th {
+  background: #fafbfd !important;
+  padding: 4px 6px !important;
+  vertical-align: middle;
+}
+
+.erp-op-filter {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+}
+
+.erp-op-btn {
+  width: 34px;
+  min-width: 34px;
+  height: 24px;
+  border: 1px solid var(--crm-border-strong);
+  border-right: none;
+  border-radius: var(--crm-radius-xs) 0 0 var(--crm-radius-xs);
+  background: #f5f6f8;
+  color: var(--crm-ink-2);
+  font-size: 11px;
+  font-weight: 600;
+  font-family: ui-monospace, Menlo, monospace;
+  cursor: pointer;
+  padding: 0;
+  line-height: 22px;
+  text-align: center;
+}
+
+.erp-op-btn:hover {
+  background: var(--crm-brand-50);
+  border-color: var(--crm-brand-300);
+  color: var(--crm-accent);
+}
+
+.erp-op-input.ant-input {
+  border-radius: 0 var(--crm-radius-xs) var(--crm-radius-xs) 0;
+  height: 24px;
+}
+
+.erp-op-filter .ant-select .ant-select-selector {
+  border-radius: var(--crm-radius-xs);
+  min-height: 24px;
+}
+
+.ant-dropdown .erp-op-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 18px;
+  background: #f0f2f6;
+  border-radius: 4px;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  color: var(--crm-ink-2);
+}
+
+.ant-dropdown-menu-item-selected .erp-op-icon {
+  background: var(--crm-accent);
+  color: #fff;
+}
+
+/* 表格工具条 */
+.erp-table-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.erp-tool-btn {
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--crm-border-strong);
+  border-radius: var(--crm-radius-xs);
+  background: #fff;
+  font-size: 12px;
+  color: var(--crm-ink-2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.erp-tool-btn:hover {
+  border-color: var(--crm-brand-300);
+  color: var(--crm-accent);
+  background: var(--crm-brand-50);
+}
+
+.erp-tool-hint {
+  font-size: 11px;
+  color: var(--crm-muted-2);
+}
+
+.erp-batch-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--crm-accent);
+}
+
+.erp-batch-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  background: var(--crm-brand-50);
+  border: 1px solid var(--crm-brand-100);
+  border-radius: var(--crm-radius-xs);
+}
+
+/* 行「→编辑」：默认 →，悬停出编辑（见上方权威样式） */
+.ant-table-tbody > tr:hover .erp-row-go {
+  opacity: 1;
+  background: var(--crm-brand-50);
+}
+
+.erp-row-go:hover {
+  background: var(--crm-accent) !important;
+  color: #fff !important;
+  opacity: 1 !important;
+}
+
+/* 保存后行内闪绿 */
+@keyframes erp-flash-green {
+  0% {
+    background: rgba(13, 148, 136, 0.28) !important;
+  }
+  100% {
+    background: transparent !important;
+  }
+}
+
+.erp-row-flash > td {
+  animation: erp-flash-green 1.2s ease-out;
+}
+
+/* ===== 全站表格行高统一（表头 36 / 表体 40） ===== */
+.ant-table-wrapper table.ant-table .ant-table-thead > tr > th {
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  box-sizing: border-box;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+.ant-table-wrapper table.ant-table .ant-table-tbody > tr > td {
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  box-sizing: border-box;
+  overflow: hidden !important;
+}
+
+/* → 列：固定窄宽，内容自适应不撑开 */
+.erp-grid-wrap .ant-table-thead > tr > th.erp-col-go,
+.erp-grid-wrap .ant-table-tbody > tr > td.erp-col-go {
+  width: 28px !important;
+  min-width: 28px !important;
+  max-width: 28px !important;
+}
+
+.erp-row-go {
+  width: 28px !important;
+  min-width: 28px !important;
+  max-width: 28px !important;
+  overflow: visible !important;
+}
+
+/* 对比度：次要文字加深，避免看不清 */
+.crm-muted,
+.ant-typography-secondary {
+  color: #4b5563 !important;
+}
+
+/* 列拖拽调宽手柄 */
+.erp-grid-wrap .ant-table-thead > tr > th {
+  position: relative !important;
+  overflow: visible !important;
+  border-right: 1px solid var(--crm-border-strong) !important;
+}
+
+.erp-grid-wrap .ant-table-thead > tr > th .ant-table-column-title,
+.erp-grid-wrap .erp-col-head {
+  position: static !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.erp-col-resizer {
+  position: absolute;
+  top: 0;
+  right: -5px;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 5;
+  user-select: none;
+  background: transparent;
+}
+
+.erp-col-resizer::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 2px;
+  bottom: 2px;
+  width: 1px;
+  margin-left: -0.5px;
+  background: #c8c8cd;
+  border-radius: 1px;
+}
+
+.erp-col-resizer:hover::before,
+.erp-col-resizer.active::before {
+  width: 2px;
+  margin-left: -1px;
+  background: var(--crm-accent);
+}
+
+.erp-col-resizer:hover,
+.erp-col-resizer.active {
+  background: var(--crm-accent-soft);
+}
+
+/* ==========================================================================
+   11. 弹窗（Infor 风格底部通栏按钮 · 品牌色对齐）
+   ========================================================================== */
+.ant-modal-root .ant-modal {
+  padding-bottom: 0;
+}
+
+.ant-modal .ant-modal-content {
+  border-radius: var(--crm-radius) !important;
+  box-shadow: 0 12px 48px -12px rgba(16, 24, 40, 0.32) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.ant-modal .ant-modal-header {
+  margin: 0 !important;
+  padding: 18px 20px !important;
+  background: #fff !important;
+  border-bottom: 1px solid var(--crm-border) !important;
+  border-radius: 0 !important;
+}
+
+.ant-modal .ant-modal-title {
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  color: var(--crm-ink) !important;
+  line-height: 1.3;
+}
+
+.ant-modal .ant-modal-close {
+  top: 16px !important;
+  right: 14px !important;
+}
+
+.ant-modal .ant-modal-body {
+  padding: 16px 20px 8px !important;
+  max-height: 62vh;
+  overflow: auto;
+}
+
+.ant-modal .ant-modal-footer {
+  margin: 0 !important;
+  padding: 0 !important;
+  border-top: 1px solid var(--crm-border) !important;
+  display: flex !important;
+  gap: 0;
+}
+
+.ant-modal .ant-modal-footer .ant-btn {
+  flex: 1 1 0;
+  height: 50px !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-left: 1px solid var(--crm-border) !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ant-modal .ant-modal-footer .ant-btn:first-child {
+  border-left-color: transparent !important;
+}
+
+.ant-modal .ant-modal-footer .ant-btn-default {
+  color: var(--crm-accent) !important;
+  background: #fff !important;
+}
+
+.ant-modal .ant-modal-footer .ant-btn-default:hover {
+  color: var(--crm-brand-600) !important;
+  background: var(--crm-brand-50) !important;
+}
+
+.ant-modal .ant-modal-footer .ant-btn-primary {
+  color: #fff !important;
+  background: linear-gradient(180deg, var(--crm-brand-500) 0%, var(--crm-brand-600) 100%) !important;
+}
+
+.ant-modal .ant-modal-footer .ant-btn-primary:hover {
+  background: var(--crm-brand-400) !important;
+}
+
+.ant-modal .ant-form-item-label > label {
+  color: var(--crm-ink-2);
+  font-size: 12.5px;
+}
+
+.ant-drawer .ant-drawer-footer .ant-btn {
+  flex: 1;
+  height: 48px;
+  border-radius: 0;
+}
+
+/* ==========================================================================
+   12. 命令面板（⌘K）
+   ========================================================================== */
+.crm-command-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: var(--crm-radius-sm);
+  border: 1px solid var(--crm-border-strong);
+  background: #f7f9fc;
+  color: var(--crm-muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.crm-command-trigger:hover {
+  border-color: var(--crm-brand-300);
+  background: #fff;
+  color: var(--crm-accent);
+}
+
+.crm-command-trigger kbd {
+  margin-left: auto;
+  font-family: inherit;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: #fff;
+  border: 1px solid var(--crm-border-strong);
+  color: var(--crm-muted-2);
+}
+
+.crm-command-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--crm-radius-sm);
+  cursor: pointer;
+}
+
+.crm-command-item.active {
+  background: var(--crm-brand-50);
+}
+
+.crm-command-group {
+  padding: 6px 12px 2px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--crm-muted-2);
+}
+
+.crm-hide {
+  display: none !important;
+}
+
+/* 菜单待办徽标 */
+.crm-menu-badge-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.crm-menu-badge {
+  margin-left: auto;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--crm-danger);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+/* 全站徽标统一：菜单 / 顶栏 / 卡片角标 */
+.crm-badge,
+.ant-badge-count {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  line-height: 18px !important;
+  padding: 0 5px !important;
+  border-radius: 9px !important;
+  box-shadow: none !important;
+}
+
+.crm-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--crm-danger);
+  color: #fff;
+}
+
+.crm-menu.ant-menu-dark .ant-menu-item-selected .crm-menu-badge {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--crm-brand-600);
+}
+
+/* ==========================================================================
+   12.1 商机看板（拖拽 · 列内滚动）
+   ========================================================================== */
+.crm-kanban {
+  --crm-kanban-h: 560px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  align-items: stretch;
+  min-height: 240px;
+}
+
+.crm-kanban-col {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 276px;
+  width: 276px;
+  height: var(--crm-kanban-h);
+  background: #f2f5f9;
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  overflow: hidden;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.crm-kanban-col.over {
+  border-color: var(--crm-brand-300);
+  background: var(--crm-brand-50);
+}
+
+.crm-kanban-col-head {
+  flex: 0 0 auto;
+  padding: 10px 12px;
+  background: #fff;
+  border-bottom: 1px solid var(--crm-border);
+  border-top: 3px solid var(--crm-accent);
+}
+
+.crm-kanban-col-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--crm-ink);
+}
+
+.crm-kanban-col-amount {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--crm-ink);
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.crm-kanban-col-rate {
+  font-size: 11px;
+  color: var(--crm-muted-2);
+  margin-top: 2px;
+}
+
+.crm-kanban-col-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.crm-kanban-drophint {
+  border: 1px dashed var(--crm-border-strong);
+  border-radius: var(--crm-radius-sm);
+  padding: 18px 8px;
+  text-align: center;
+  color: var(--crm-muted-2);
+  font-size: 12px;
+}
+
+.crm-kanban-card {
+  touch-action: none;
+  cursor: grab;
+}
+
+.crm-kanban-card.dragging {
+  opacity: 0.4;
+}
+
+.crm-kanban-card-inner {
+  background: #fff;
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius-sm);
+  padding: 10px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.crm-kanban-card-inner:hover {
+  border-color: var(--crm-brand-200);
+  box-shadow: 0 8px 18px -14px rgba(31, 86, 224, 0.8);
+}
+
+.crm-kanban-card-inner.overlay {
+  box-shadow: 0 18px 32px -16px rgba(16, 24, 40, 0.5);
+  transform: rotate(-1.5deg);
+  cursor: grabbing;
+}
+
+.crm-kanban-card-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.crm-kanban-grip {
+  color: #c3c9d4;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.crm-kanban-card-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--crm-ink);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crm-kanban-card-name:hover {
+  color: var(--crm-accent);
+}
+
+.crm-kanban-card-account {
+  font-size: 12px;
+  color: var(--crm-muted);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crm-kanban-card-account a {
+  color: var(--crm-muted);
+}
+
+.crm-kanban-card-account a:hover {
+  color: var(--crm-accent);
+}
+
+.crm-kanban-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.crm-kanban-amount {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--crm-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.crm-kanban-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--crm-border);
+  font-size: 11px;
+  color: var(--crm-muted-2);
+}
+
+.crm-kanban-empty {
+  padding: 60px 20px;
+  color: var(--crm-muted-2);
+}
+
+@media (max-width: 860px) {
+  .crm-kanban-col {
+    flex: 0 0 240px;
+    width: 240px;
+    height: 420px;
+  }
+}
+
+/* ==========================================================================
+   13. 通用小件
+   ========================================================================== */
+.crm-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--crm-ink);
+  margin: 4px 0 12px;
+}
+
+.crm-section-title::before {
+  content: '';
+  width: 3px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--crm-accent);
+}
+
+.crm-muted {
+  color: var(--crm-muted);
+  font-size: 12px;
+}
+
+.crm-row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+.crm-scroll-y {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* 决策链 / 甘特 */
+.decision-chain-wrap {
+  overflow-x: auto;
+  padding: 4px 0;
+}
+
+.decision-chain-wrap svg {
+  min-width: 480px;
+}
+
+.sales-path-steps {
+  padding: 4px 0 2px;
+}
+
+/* ==========================================================================
+   14. 深色模式
+   ========================================================================== */
+[data-mode='dark'] {
+  --crm-bg: #0b1220;
+  --crm-bg-soft: #0f172a;
+  --crm-card: #131c2e;
+  --crm-ink: #e6eaf2;
+  --crm-ink-2: #cbd5e1;
+  --crm-muted: #94a3b8;
+  --crm-muted-2: #7c8aa0;
+  --crm-border: #24304a;
+  --crm-border-strong: #2c3a56;
+  --crm-accent-soft: rgba(47, 107, 255, 0.2);
+  --crm-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --crm-shadow-hover: 0 8px 24px -12px rgba(0, 0, 0, 0.7);
+  --crm-topbar-bg: #131c2e;
+  color-scheme: dark;
+}
+
+[data-mode='dark'] body {
+  background: var(--crm-bg);
+  color: var(--crm-ink);
+}
+
+[data-mode='dark'] .ant-layout,
+[data-mode='dark'] .ant-layout-content {
+  background: var(--crm-bg) !important;
+}
+
+[data-mode='dark'] .ant-card {
+  background: var(--crm-card) !important;
+  border-color: var(--crm-border) !important;
+  color: var(--crm-ink);
+}
+
+[data-mode='dark'] .ant-card .ant-card-head {
+  background: var(--crm-card);
+  border-bottom-color: var(--crm-border);
+}
+
+[data-mode='dark'] .ant-card .ant-card-head-title {
+  color: var(--crm-ink);
+}
+
+[data-mode='dark'] .crm-header.ant-layout-header {
+  background: var(--crm-topbar-bg) !important;
+  border-bottom-color: var(--crm-border) !important;
+}
+
+[data-mode='dark'] .crm-crumb-current,
+[data-mode='dark'] .crm-user-name {
+  color: var(--crm-ink);
+}
+
+[data-mode='dark'] .crm-statusbar {
+  background: #0f172a;
+  border-top-color: var(--crm-border);
+}
+
+[data-mode='dark'] .ant-table-thead > tr > th {
+  background: #182338 !important;
+  color: #cbd5e1 !important;
+  border-bottom-color: var(--crm-border) !important;
+}
+
+[data-mode='dark'] .ant-table-tbody > tr > td {
+  background: transparent;
+  border-bottom-color: var(--crm-border) !important;
+}
+
+[data-mode='dark'] .ant-table-tbody > tr:hover > td {
+  background: #182338 !important;
+}
+
+[data-mode='dark'] .ant-btn-default {
+  background: #1b2540;
+  border-color: var(--crm-border-strong);
+  color: #e2e8f0;
+}
+
+[data-mode='dark'] .ant-input,
+[data-mode='dark'] .ant-input-affix-wrapper,
+[data-mode='dark'] .ant-input-number,
+[data-mode='dark'] .ant-select-selector,
+[data-mode='dark'] .ant-picker {
+  background: #0f172a !important;
+  border-color: var(--crm-border-strong) !important;
+  color: #e2e8f0 !important;
+}
+
+[data-mode='dark'] .ant-tag {
+  background: #1b2540;
+  border-color: var(--crm-border-strong);
+  color: #e2e8f0;
+}
+
+[data-mode='dark'] .ant-alert {
+  background: #0f172a;
+}
+
+[data-mode='dark'] .ant-modal-content {
+  background: var(--crm-card);
+  color: var(--crm-ink);
+}
+
+[data-mode='dark'] .ant-modal .ant-modal-header {
+  background: var(--crm-card) !important;
+  border-bottom-color: var(--crm-border) !important;
+}
+
+[data-mode='dark'] .ant-modal .ant-modal-title {
+  color: var(--crm-ink) !important;
+}
+
+[data-mode='dark'] .ant-modal .ant-modal-footer {
+  border-top-color: var(--crm-border) !important;
+}
+
+[data-mode='dark'] .ant-modal .ant-modal-footer .ant-btn {
+  border-left-color: var(--crm-border) !important;
+}
+
+[data-mode='dark'] .ant-modal .ant-modal-footer .ant-btn-default {
+  background: var(--crm-card) !important;
+}
+
+[data-mode='dark'] .crm-mobile-tabs.ant-layout-footer {
+  background: rgba(19, 28, 46, 0.97);
+  border-top-color: var(--crm-border);
+}
+
+[data-mode='dark'] .erp-list,
+[data-mode='dark'] .erp-grid {
+  background: var(--crm-card);
+  border-color: var(--crm-border);
+}
+
+[data-mode='dark'] .erp-toolbar {
+  background: #16203a;
+  border-bottom-color: var(--crm-border);
+}
+
+[data-mode='dark'] .erp-grid .ant-table-thead > tr > th {
+  background: #182338 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-mode='dark'] .erp-grid-status {
+  background: #141d31;
+}
+
+[data-mode='dark'] .crm-report-tile,
+[data-mode='dark'] .crm-mini-kpi {
+  background: var(--crm-card);
+  border-color: var(--crm-border);
+}
+
+[data-mode='dark'] .crm-command-trigger {
+  background: #16203a;
+  border-color: var(--crm-border-strong);
+}
+
+[data-mode='dark'] .crm-command-trigger kbd {
+  background: #0f172a;
+  border-color: var(--crm-border-strong);
+}
+
+[data-mode='dark'] .crm-reports-nav-item {
+  background: var(--crm-card);
+  color: var(--crm-ink-2);
+}
+
+[data-mode='dark'] .crm-kpi {
+  background: linear-gradient(180deg, var(--crm-card) 0%, #16203a 100%);
+}
+
+/* ==========================================================================
+   15. 打印
+   ========================================================================== */
+@media print {
+  .crm-header,
+  .crm-sider,
+  .crm-statusbar,
+  .crm-mobile-tabs,
+  .crm-reports-nav,
+  .ant-btn {
+    display: none !important;
+  }
+
+  .crm-content {
+    margin: 0;
+  }
+
+  .ant-card {
+    box-shadow: none !important;
+    border-color: #ddd !important;
+  }
+}
+
+/* 所见即所得模板编辑器 */
+.rte-edit:empty::before {
+  content: attr(data-placeholder);
+  color: #b0b6bf;
+  pointer-events: none;
+}
+.rte-edit table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 8px 0;
+}
+.rte-edit table th,
+.rte-edit table td {
+  border: 1px solid #cbd5e1;
+  padding: 6px 8px;
+}
+.rte-edit h1 {
+  font-size: 20px;
+}
+.rte-edit h2 {
+  font-size: 17px;
+}
+.rte-edit h3 {
+  font-size: 15px;
+}
+.rte-edit hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 12px 0;
+}
+
+/* 工作台快捷卡片 */
+.crm-quick-card:hover {
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.1);
+  transform: translateY(-1px);
+}
+
+/* 报价/合同模板打印美化 */
+.tpl-print-body {
+  background: #fff;
+  color: #1e293b;
+}
+.tpl-print-body .qtpl {
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 28px 32px 24px;
+  background: #fff;
+}
+.tpl-print-body table {
+  page-break-inside: auto;
+}
+.tpl-print-body tr {
+  page-break-inside: avoid;
+}
+@media print {
+  .tpl-print-body .qtpl {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+    border-radius: 0;
+    max-width: none;
+  }
+  .tpl-print-body table {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* 移动端卡片左滑操作提示 */
+.crm-mobile-list .crm-mobile-card {
+  touch-action: pan-y;
+}
+
+/* 移动端详情页适配 */
+@media (max-width: 768px) {
+  .crm-kpi .ant-statistic {
+    margin-bottom: 8px;
+  }
+  .decision-chain-wrap {
+    overflow-x: auto;
+  }
+}
+
+/* 报价/合同详情移动端 */
+@media (max-width: 768px) {
+  .ant-descriptions-item-label {
+    min-width: 72px;
+  }
+}
+
+/* 移动端详情页适配 */
+@media (max-width: 768px) {
+  .crm-kpi .ant-statistic {
+    margin-bottom: 8px;
+  }
+  .decision-chain-wrap {
+    overflow-x: auto;
+  }
+}
+
+/* 移动端详情页适配 */
+@media (max-width: 768px) {
+  .crm-kpi .ant-statistic {
+    margin-bottom: 8px;
+  }
+  .decision-chain-wrap {
+    overflow-x: auto;
+  }
+}
+
+/* 签署页移动端 */
+@media (max-width: 768px) {
+  .ant-steps {
+    overflow-x: auto;
+  }
+}
+
+/* 帮助中心：Markdown 手册排版 */
+.crm-manual {
+  max-width: 980px;
+  margin: 0 auto;
+  font-size: 14px;
+  line-height: 1.75;
+  color: #1f2329;
+}
+.crm-manual h1 { font-size: 26px; margin: 8px 0 16px; }
+.crm-manual h2 { font-size: 20px; margin: 32px 0 12px; padding-top: 12px; border-top: 1px solid #eef0f3; }
+.crm-manual h3 { font-size: 16px; margin: 24px 0 8px; }
+.crm-manual h1, .crm-manual h2, .crm-manual h3, .crm-manual h4 { scroll-margin-top: 72px; }
+.crm-manual img { max-width: 100%; border: 1px solid #e5e6eb; border-radius: 8px; margin: 8px 0; }
+.crm-manual table { border-collapse: collapse; margin: 12px 0; width: 100%; display: block; overflow-x: auto; }
+.crm-manual th, .crm-manual td { border: 1px solid #e5e6eb; padding: 6px 10px; vertical-align: top; }
+.crm-manual th { background: #f7f8fa; font-weight: 600; white-space: nowrap; }
+.crm-manual td img { max-width: 240px; }
+.crm-manual blockquote { margin: 12px 0; padding: 8px 14px; background: #f5f8ff; border-left: 3px solid #2f6bff; color: #4e5969; }
+.crm-manual code { background: #f2f3f5; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+.crm-manual pre { background: #f7f8fa; padding: 12px; border-radius: 8px; overflow-x: auto; }
+.crm-manual pre code { background: none; padding: 0; }

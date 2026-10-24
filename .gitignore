@@ -1,0 +1,28 @@
+node_modules/
+dist/
+build/
+.storage/
+storage/
+*.log
+.env
+.env.local
+.env.docker
+.DS_Store
+test-results/
+playwright-report/
+coverage/
+apps/api/dist/
+apps/web/dist/
+packages/shared/dist/
+packages/mobile-bridge/dist/
+# 手机 App 网页包（由 scripts/sync-mobile.sh 生成）
+apps/mobile/www/
+apps/harmony/rawfile/www/
+*.tsbuildinfo
+apps/api/prisma/migrations/**/migration_lock.toml.bak
+
+# pnpm 本地 store（勿提交）
+.pnpm-store/
+
+# settings→表 迁移前的数据备份（含业务数据）
+backups/

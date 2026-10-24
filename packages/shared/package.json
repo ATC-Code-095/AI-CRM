@@ -1,0 +1,17 @@
+{
+  "name": "@ai-crm/shared",
+  "version": "0.2.0",
+  "license": "Apache-2.0",
+  "author": "Suzhou Atecent Information Technology Co., Ltd.",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepare": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
+}

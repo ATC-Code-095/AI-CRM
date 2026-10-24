@@ -1,0 +1,88 @@
+# 全套服务：PostgreSQL + Redis + API + Web（nginx）
+# 用法（详见 README「部署」）：
+#   cp .env.docker.example .env.docker   # 填入数据库密码与 JWT 密钥
+#   docker compose --env-file .env.docker up -d --build
+# 访问：http://<服务器>:8080（端口可用 WEB_PORT 修改）
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: crm
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?请在 .env.docker 中设置 POSTGRES_PASSWORD}
+      POSTGRES_DB: ai_crm
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crm -d ai_crm"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      args:
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgresql://crm:${POSTGRES_PASSWORD}@postgres:5432/ai_crm
+      REDIS_URL: redis://redis:6379
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?请在 .env.docker 中设置 JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?请在 .env.docker 中设置 JWT_REFRESH_SECRET}
+      JWT_ACCESS_TTL: ${JWT_ACCESS_TTL:-15m}
+      JWT_REFRESH_TTL: ${JWT_REFRESH_TTL:-7d}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8080}
+      # 首次启动设为 true 写入角色权限与演示账号，之后改回 false
+      AUTO_SEED: ${AUTO_SEED:-false}
+      SEED_PASSWORD: ${SEED_PASSWORD:-}
+      FILE_STORAGE_DIR: /data/storage
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_BASE_URL: ${AI_BASE_URL:-}
+      AI_MODEL: ${AI_MODEL:-}
+      SETTINGS_SECRET: ${SETTINGS_SECRET:-}
+      APNS_KEY: ${APNS_KEY:-}
+      APNS_KEY_ID: ${APNS_KEY_ID:-}
+      APNS_TEAM_ID: ${APNS_TEAM_ID:-}
+      APNS_BUNDLE_ID: ${APNS_BUNDLE_ID:-com.itecent.crm}
+      APNS_PRODUCTION: ${APNS_PRODUCTION:-false}
+      FCM_SERVICE_ACCOUNT: ${FCM_SERVICE_ACCOUNT:-}
+      HMS_SERVICE_ACCOUNT: ${HMS_SERVICE_ACCOUNT:-}
+    volumes:
+      - storage:/data/storage
+    # 只在本机开放，便于排查；对外访问统一走 web 的 /api/
+    ports:
+      - "127.0.0.1:3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+  storage:

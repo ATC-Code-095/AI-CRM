@@ -1,0 +1,1614 @@
+// AI-CRM Prisma Schema — aligned with docs/04 + 12/13
+// Do not alter DB by hand; use prisma migrate
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========== M01 组织 ==========
+
+model Tenant {
+  id            String    @id @default(cuid())
+  code          String    @unique
+  name          String
+  defaultLocale String    @default("zh-CN")
+  status        String    @default("ACTIVE") // ACTIVE | SUSPENDED
+  expireAt      DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  users       User[]
+  departments Department[]
+  leads       Lead[]
+  accounts    Account[]
+  settings    Setting[]
+}
+
+model Department {
+  id               String    @id @default(cuid())
+  tenantId         String
+  name             String
+  parentId         String?
+  code             String?
+  path             String
+  managerId        String?
+  sortOrder        Int       @default(0)
+  /// 通讯录同步来源：wechat_work | dingtalk | feishu，与 externalId 一起对应平台部门
+  externalProvider String?
+  externalId       String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+
+  tenant   Tenant       @relation(fields: [tenantId], references: [id])
+  parent   Department?  @relation("DeptTree", fields: [parentId], references: [id])
+  children Department[] @relation("DeptTree")
+  users    User[]
+
+  @@unique([tenantId, code])
+  @@unique([tenantId, externalProvider, externalId])
+  @@index([tenantId, deletedAt])
+}
+
+model User {
+  id           String    @id @default(cuid())
+  tenantId     String
+  email        String
+  passwordHash String
+  name         String
+  phone        String?
+  avatarUrl    String?
+  status       String    @default("ACTIVE") // ACTIVE | DISABLED
+  departmentId String?
+  managerId    String?
+  title        String?
+  dataScope    String    @default("SELF") // SELF|TEAM|DEPARTMENT|ALL|CUSTOM
+  locale       String    @default("zh-CN")
+  timezone     String    @default("Asia/Shanghai")
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  tenant     Tenant      @relation(fields: [tenantId], references: [id])
+  department Department? @relation(fields: [departmentId], references: [id])
+  userRoles  UserRole[]
+
+  @@unique([tenantId, email])
+  @@index([tenantId, deletedAt, status])
+}
+
+model Role {
+  id          String    @id @default(cuid())
+  tenantId    String
+  code        String
+  name        String
+  description String?
+  isSystem    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  rolePermissions RolePermission[]
+  userRoles       UserRole[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId, deletedAt])
+}
+
+model Permission {
+  id     String @id @default(cuid())
+  code   String @unique
+  name   String
+  module String
+
+  rolePermissions RolePermission[]
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+}
+
+model UserRole {
+  userId String
+  roleId String
+  user   User   @relation(fields: [userId], references: [id])
+  role   Role   @relation(fields: [roleId], references: [id])
+
+  @@id([userId, roleId])
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  tenantId  String
+  key       String
+  value     Json
+  scope     String   @default("TENANT") // TENANT | USER
+  userId    String?
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, scope, key, userId])
+  @@index([tenantId, key])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  tenantId  String
+  userId    String
+  action    String
+  entity    String
+  entityId  String
+  before    Json?
+  after     Json?
+  ip        String?
+  userAgent String?
+  at        DateTime @default(now())
+
+  @@index([tenantId, entity, entityId])
+  @@index([tenantId, at])
+}
+
+model FieldDefinition {
+  id        String    @id @default(cuid())
+  tenantId  String
+  entity    String
+  apiName   String
+  label     String
+  labelI18n Json?
+  dataType  String
+  required  Boolean   @default(false)
+  options   Json?
+  sortOrder Int       @default(0)
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([tenantId, entity, apiName])
+  @@index([tenantId, entity, isActive])
+}
+
+// ========== M02 线索 ==========
+
+model Lead {
+  id                     String    @id @default(cuid())
+  tenantId               String
+  name                   String
+  contactName            String?
+  phone                  String?
+  email                  String?
+  website                String?
+  industry               String?
+  source                 String // WEB_FORM|PHONE|REFERRAL|EXHIBITION|COLD_CALL|ADS|PARTNER|OTHER
+  campaignId             String?
+  status                 String    @default("NEW")
+  score                  Int       @default(0)
+  ownerId                String
+  departmentId           String?
+  expectedAmount         Decimal?  @db.Decimal(18, 2)
+  remark                 String?
+  nextFollowAt           DateTime?
+  customValues           Json?
+  convertedAt            DateTime?
+  convertedAccountId     String?
+  convertedContactId     String?
+  convertedOpportunityId String?
+  closeReason            String?
+  createdAt              DateTime  @default(now())
+  createdById            String
+  updatedAt              DateTime  @updatedAt
+  updatedById            String
+  deletedAt              DateTime?
+  deletedById            String?
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, deletedAt, ownerId, status, nextFollowAt])
+  @@index([tenantId, campaignId])
+}
+
+// ========== M03 客户联系人 ==========
+
+model Account {
+  id              String    @id @default(cuid())
+  tenantId        String
+  name            String
+  shortName       String?
+  accountNo       String?
+  industry        String?
+  scale           String? // MICRO|SMALL|MEDIUM|LARGE|ENTERPRISE
+  region          String?
+  address         String?
+  website         String?
+  phone           String?
+  level           String    @default("C") // A|B|C|D
+  stage           String    @default("POTENTIAL") // POTENTIAL|ACTIVE|AT_RISK|CHURNED
+  ownerId         String
+  departmentId    String?
+  parentAccountId String?
+  source          String?
+  annualRevenue   Decimal?  @db.Decimal(18, 2)
+  remark          String?
+  lastActivityAt  DateTime?
+  customValues    Json?
+  createdAt       DateTime  @default(now())
+  createdById     String
+  updatedAt       DateTime  @updatedAt
+  updatedById     String
+  deletedAt       DateTime?
+  deletedById     String?
+
+  tenant        Tenant        @relation(fields: [tenantId], references: [id])
+  parentAccount Account?      @relation("AccountTree", fields: [parentAccountId], references: [id])
+  childAccounts Account[]     @relation("AccountTree")
+  contacts      Contact[]
+  opportunities Opportunity[]
+  contracts     Contract[]
+
+  @@index([tenantId, deletedAt, ownerId, name])
+  @@index([tenantId, parentAccountId])
+}
+
+model Contact {
+  id              String    @id @default(cuid())
+  tenantId        String
+  accountId       String
+  name            String
+  title           String?
+  phone           String?
+  mobile          String?
+  email           String?
+  isPrimary       Boolean   @default(false)
+  influence       Int? // 决策影响力 0-100
+  decisionRole    String? // ECONOMIC|USER|TECH|CHAMPION|OTHER
+  birthDate       DateTime? @db.Date
+  wechat          String?
+  preferredLocale String?
+  remark          String?
+  createdAt       DateTime  @default(now())
+  createdById     String
+  updatedAt       DateTime  @updatedAt
+  updatedById     String
+  deletedAt       DateTime?
+  deletedById     String?
+
+  account Account @relation(fields: [accountId], references: [id])
+
+  @@index([tenantId, deletedAt, accountId])
+  @@index([tenantId, mobile])
+  @@index([tenantId, email])
+}
+
+model EntityShare {
+  id          String   @id @default(cuid())
+  tenantId    String
+  entityType  String // ACCOUNT|LEAD|OPPORTUNITY|CONTRACT
+  entityId    String
+  userId      String
+  role        String // COLLABORATOR|VIEWER
+  createdAt   DateTime @default(now())
+  createdById String
+
+  @@unique([tenantId, entityType, entityId, userId])
+  @@index([tenantId, userId, entityType])
+}
+
+// ========== M04 商机 ==========
+
+model Pipeline {
+  id        String    @id @default(cuid())
+  tenantId  String
+  code      String
+  name      String
+  isDefault Boolean   @default(false)
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  stages        PipelineStage[]
+  opportunities Opportunity[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId, deletedAt])
+}
+
+model PipelineStage {
+  id             String   @id @default(cuid())
+  tenantId       String
+  pipelineId     String
+  code           String
+  name           String
+  winRate        Int      @default(0)
+  sortOrder      Int      @default(0)
+  isClosing      Boolean  @default(false)
+  requiredFields Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  pipeline Pipeline @relation(fields: [pipelineId], references: [id])
+
+  opportunities Opportunity[]
+
+  @@unique([tenantId, pipelineId, code])
+  @@index([pipelineId, sortOrder])
+}
+
+model Opportunity {
+  id                String    @id @default(cuid())
+  tenantId          String
+  name              String
+  accountId         String
+  primaryContactId  String?
+  pipelineId        String
+  stageId           String
+  amount            Decimal   @default(0) @db.Decimal(18, 2)
+  /// 币种（空 = 写入时由触发器填为租户本位币）；amountBase 为折算本位币金额（触发器按汇率表计算）
+  currency          String    @default("")
+  amountBase        Decimal   @default(0) @db.Decimal(18, 2)
+  winRate           Int       @default(0)
+  expectedCloseDate DateTime  @db.Date
+  ownerId           String
+  departmentId      String?
+  source            String?
+  competitor        String?
+  nextStep          String?
+  nextFollowAt      DateTime?
+  closeReason       String?
+  description       String?
+  actualCloseDate   DateTime? @db.Date
+  leadId            String?
+  campaignId        String?
+  version           Int       @default(1)
+  createdAt         DateTime  @default(now())
+  createdById       String
+  updatedAt         DateTime  @updatedAt
+  updatedById       String
+  deletedAt         DateTime?
+  deletedById       String?
+
+  account   Account                   @relation(fields: [accountId], references: [id])
+  pipeline  Pipeline                  @relation(fields: [pipelineId], references: [id])
+  stage     PipelineStage             @relation(fields: [stageId], references: [id])
+  members   OpportunityMember[]
+  histories OpportunityStageHistory[]
+  quotes    Quote[]
+  contracts Contract[]
+
+  @@index([tenantId, deletedAt, stageId, expectedCloseDate])
+  @@index([tenantId, accountId])
+  @@index([tenantId, ownerId, deletedAt])
+}
+
+model OpportunityMember {
+  opportunityId String
+  userId        String
+  role          String // COLLABORATOR|INFLUENCER
+  createdAt     DateTime    @default(now())
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+
+  @@id([opportunityId, userId])
+  @@index([userId])
+}
+
+model OpportunityStageHistory {
+  id            String   @id @default(cuid())
+  tenantId      String
+  opportunityId String
+  fromStageId   String?
+  toStageId     String
+  fromWinRate   Int?
+  toWinRate     Int?
+  changedById   String
+  changedAt     DateTime @default(now())
+  note          String?
+
+  opportunity Opportunity @relation(fields: [opportunityId], references: [id])
+
+  @@index([opportunityId, changedAt])
+}
+
+// ========== M05 活动 ==========
+
+model Activity {
+  id             String    @id @default(cuid())
+  tenantId       String
+  type           String // TASK|VISIT|CALL|EMAIL|NOTE
+  subject        String
+  status         String    @default("PLANNED") // PLANNED|DONE|CANCELED
+  startAt        DateTime?
+  endAt          DateTime?
+  dueAt          DateTime?
+  entityType     String // LEAD|ACCOUNT|CONTACT|OPPORTUNITY|TICKET
+  entityId       String
+  ownerId        String
+  content        String?
+  location       String?
+  checkInLat     Decimal?  @db.Decimal(10, 7)
+  checkInLng     Decimal?  @db.Decimal(10, 7)
+  checkInAt      DateTime?
+  checkInAddress String?
+  remindAt       DateTime?
+  source         String    @default("MANUAL") // MANUAL|AI|API|CADENCE
+  createdAt      DateTime  @default(now())
+  createdById    String
+  updatedAt      DateTime  @updatedAt
+  updatedById    String
+  deletedAt      DateTime?
+  deletedById    String?
+
+  @@index([tenantId, deletedAt, entityType, entityId, startAt])
+  @@index([tenantId, ownerId, status, dueAt])
+  @@index([tenantId, remindAt])
+}
+
+// ========== M06 产品报价 ==========
+
+model Product {
+  id            String    @id @default(cuid())
+  tenantId      String
+  code          String
+  name          String
+  category      String?
+  unit          String    @default("个")
+  description   String?
+  isActive      Boolean   @default(true)
+  standardPrice Decimal   @db.Decimal(18, 2)
+  cost          Decimal?  @db.Decimal(18, 2)
+  taxRate       Decimal   @default(0) @db.Decimal(5, 4)
+  createdAt     DateTime  @default(now())
+  createdById   String
+  updatedAt     DateTime  @updatedAt
+  updatedById   String
+  deletedAt     DateTime?
+  deletedById   String?
+
+  prices        ProductPrice[]
+  quoteLines    QuoteLine[]
+  contractLines ContractLine[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId, deletedAt, isActive])
+}
+
+model ProductPrice {
+  id            String    @id @default(cuid())
+  tenantId      String
+  productId     String
+  priceBookName String    @default("standard")
+  unitPrice     Decimal   @db.Decimal(18, 2)
+  currency      String    @default("CNY")
+  validFrom     DateTime? @db.Date
+  validTo       DateTime? @db.Date
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([tenantId, productId, priceBookName, currency])
+}
+
+model Quote {
+  id             String    @id @default(cuid())
+  tenantId       String
+  quoteNo        String
+  opportunityId  String?
+  accountId      String
+  subject        String
+  status         String    @default("DRAFT")
+  currency       String    @default("")
+  subtotal       Decimal   @default(0) @db.Decimal(18, 2)
+  discountAmount Decimal   @default(0) @db.Decimal(18, 2)
+  taxAmount      Decimal   @default(0) @db.Decimal(18, 2)
+  total          Decimal   @default(0) @db.Decimal(18, 2)
+  /// 折算本位币金额（触发器计算）
+  totalBase      Decimal   @default(0) @db.Decimal(18, 2)
+  validUntil     DateTime? @db.Date
+  terms          String?
+  remark         String?
+  ownerId        String
+  projectId      String?
+  approvedAt     DateTime?
+  version        Int       @default(1)
+  createdAt      DateTime  @default(now())
+  createdById    String
+  updatedAt      DateTime  @updatedAt
+  updatedById    String
+  deletedAt      DateTime?
+  deletedById    String?
+
+  opportunity Opportunity? @relation(fields: [opportunityId], references: [id])
+  lines       QuoteLine[]
+  contracts   Contract[]
+
+  @@unique([tenantId, quoteNo])
+  @@index([tenantId, deletedAt, accountId])
+  @@index([tenantId, ownerId, status])
+  @@index([tenantId, projectId])
+}
+
+model QuoteLine {
+  id           String  @id @default(cuid())
+  tenantId     String
+  quoteId      String
+  productId    String
+  name         String
+  qty          Decimal @db.Decimal(18, 4)
+  unitPrice    Decimal @db.Decimal(18, 2)
+  discountRate Decimal @default(0) @db.Decimal(5, 4)
+  amount       Decimal @db.Decimal(18, 2)
+  sortOrder    Int     @default(0)
+  remark       String?
+
+  quote   Quote   @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([quoteId, sortOrder])
+}
+
+// ========== M07 合同回款 ==========
+
+model Contract {
+  id                 String    @id @default(cuid())
+  tenantId           String
+  contractNo         String
+  title              String
+  accountId          String
+  opportunityId      String?
+  quoteId            String?
+  projectId          String?
+  templateId         String?
+  status             String    @default("DRAFT")
+  signDate           DateTime? @db.Date
+  effectiveDate      DateTime? @db.Date
+  expireDate         DateTime? @db.Date
+  total              Decimal   @default(0) @db.Decimal(18, 2)
+  receivedAmount     Decimal   @default(0) @db.Decimal(18, 2)
+  /// 折算本位币金额（触发器按签约日汇率计算）
+  totalBase          Decimal   @default(0) @db.Decimal(18, 2)
+  receivedAmountBase Decimal   @default(0) @db.Decimal(18, 2)
+  currency           String    @default("")
+  ownerId            String
+  terms              String?
+  remark             String?
+  fileAttachmentId   String?
+  version            Int       @default(1)
+  createdAt          DateTime  @default(now())
+  createdById        String
+  updatedAt          DateTime  @updatedAt
+  updatedById        String
+  deletedAt          DateTime?
+  deletedById        String?
+
+  account     Account        @relation(fields: [accountId], references: [id])
+  opportunity Opportunity?   @relation(fields: [opportunityId], references: [id])
+  quote       Quote?         @relation(fields: [quoteId], references: [id])
+  lines       ContractLine[]
+  plans       PaymentPlan[]
+  payments    Payment[]
+
+  @@unique([tenantId, contractNo])
+  @@index([tenantId, deletedAt, accountId])
+  @@index([tenantId, ownerId, status])
+  @@index([tenantId, projectId])
+}
+
+model ContractLine {
+  id           String  @id @default(cuid())
+  tenantId     String
+  contractId   String
+  productId    String
+  name         String
+  qty          Decimal @db.Decimal(18, 4)
+  unitPrice    Decimal @db.Decimal(18, 2)
+  discountRate Decimal @default(0) @db.Decimal(5, 4)
+  amount       Decimal @db.Decimal(18, 2)
+  sortOrder    Int     @default(0)
+  remark       String?
+
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  product  Product  @relation(fields: [productId], references: [id])
+
+  @@index([contractId, sortOrder])
+}
+
+model PaymentPlan {
+  id                 String   @id @default(cuid())
+  tenantId           String
+  contractId         String
+  seq                Int
+  dueDate            DateTime @db.Date
+  amount             Decimal  @db.Decimal(18, 2)
+  receivedAmount     Decimal  @default(0) @db.Decimal(18, 2)
+  /// 折算本位币金额（触发器按所属合同币种计算）
+  amountBase         Decimal  @default(0) @db.Decimal(18, 2)
+  receivedAmountBase Decimal  @default(0) @db.Decimal(18, 2)
+  status             String   @default("PENDING") // PENDING|PARTIAL|PAID|OVERDUE
+  remark             String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  contract Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  payments Payment[]
+
+  @@unique([contractId, seq])
+  @@index([tenantId, dueDate, status])
+}
+
+model Payment {
+  id            String    @id @default(cuid())
+  tenantId      String
+  paymentNo     String
+  contractId    String
+  paymentPlanId String?
+  amount        Decimal   @db.Decimal(18, 2)
+  /// 折算本位币金额（触发器按所属合同币种、回款日汇率计算）
+  amountBase    Decimal   @default(0) @db.Decimal(18, 2)
+  paidAt        DateTime  @db.Date
+  method        String // BANK|CHECK|ALIPAY|WECHAT|OTHER
+  status        String    @default("DRAFT")
+  bankAccount   String?
+  voucherNo     String?
+  remark        String?
+  confirmedById String?
+  confirmedAt   DateTime?
+  version       Int       @default(1)
+  createdAt     DateTime  @default(now())
+  createdById   String
+  updatedAt     DateTime  @updatedAt
+  updatedById   String
+  deletedAt     DateTime?
+  deletedById   String?
+
+  contract    Contract     @relation(fields: [contractId], references: [id])
+  paymentPlan PaymentPlan? @relation(fields: [paymentPlanId], references: [id])
+
+  @@unique([tenantId, paymentNo])
+  @@index([tenantId, contractId, status])
+  @@index([tenantId, paidAt])
+}
+
+// ========== M08 工单 ==========
+
+model Ticket {
+  id            String    @id @default(cuid())
+  tenantId      String
+  ticketNo      String
+  title         String
+  accountId     String
+  contactId     String?
+  opportunityId String?
+  type          String // ISSUE|QUESTION|REQUEST|BUG
+  severity      String    @default("MEDIUM")
+  status        String    @default("NEW")
+  ownerId       String
+  dueAt         DateTime?
+  resolvedAt    DateTime?
+  resolution    String?
+  satisfaction  Int?
+  createdAt     DateTime  @default(now())
+  createdById   String
+  updatedAt     DateTime  @updatedAt
+  updatedById   String
+  deletedAt     DateTime?
+  deletedById   String?
+
+  logs TicketLog[]
+
+  @@unique([tenantId, ticketNo])
+  @@index([tenantId, deletedAt, status, severity])
+  @@index([tenantId, accountId])
+}
+
+model TicketLog {
+  id         String   @id @default(cuid())
+  tenantId   String
+  ticketId   String
+  fromStatus String?
+  toStatus   String
+  note       String?
+  userId     String
+  at         DateTime @default(now())
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId, at])
+}
+
+// ========== M09 营销 ==========
+
+model Campaign {
+  id          String    @id @default(cuid())
+  tenantId    String
+  name        String
+  type        String // WEBINAR|EXHIBITION|EMAIL|ADS|OTHER
+  status      String    @default("PLANNED")
+  startAt     DateTime?
+  endAt       DateTime?
+  budget      Decimal?  @db.Decimal(18, 2)
+  ownerId     String
+  description String?
+  createdAt   DateTime  @default(now())
+  createdById String
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  forms Form[]
+
+  @@index([tenantId, deletedAt, status])
+}
+
+model Form {
+  id             String    @id @default(cuid())
+  tenantId       String
+  campaignId     String?
+  name           String
+  fields         Json
+  isActive       Boolean   @default(true)
+  submitRedirect String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  campaign    Campaign?        @relation(fields: [campaignId], references: [id])
+  submissions FormSubmission[]
+
+  @@index([tenantId, deletedAt, isActive])
+}
+
+model FormSubmission {
+  id        String   @id @default(cuid())
+  tenantId  String
+  formId    String
+  data      Json
+  leadId    String?
+  createdAt DateTime @default(now())
+
+  form Form @relation(fields: [formId], references: [id])
+
+  @@index([formId, createdAt])
+}
+
+// ========== M10 目标 ==========
+
+model Goal {
+  id           String    @id @default(cuid())
+  tenantId     String
+  userId       String?
+  teamId       String?
+  periodType   String // MONTH|QUARTER|YEAR
+  periodKey    String // e.g. 2026-09
+  metric       String // REVENUE|NEW_OPP|WON_AMOUNT
+  targetAmount Decimal   @db.Decimal(18, 2)
+  createdAt    DateTime  @default(now())
+  createdById  String
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  @@index([tenantId, periodType, periodKey, metric])
+}
+
+model ReportDef {
+  id         String    @id @default(cuid())
+  tenantId   String
+  code       String
+  name       String
+  module     String
+  definition Json
+  ownerId    String
+  isShared   Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  @@unique([tenantId, code])
+}
+
+// ========== M11 审批 ==========
+
+model ApprovalDefinition {
+  id         String   @id @default(cuid())
+  tenantId   String
+  code       String
+  name       String
+  entityType String // QUOTE|CONTRACT|PAYMENT
+  rules      Json
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  instances ApprovalInstance[]
+
+  @@unique([tenantId, code])
+}
+
+model ApprovalInstance {
+  id           String    @id @default(cuid())
+  tenantId     String
+  definitionId String
+  entityType   String
+  entityId     String
+  status       String    @default("PENDING")
+  currentStep  Int       @default(0)
+  applicantId  String
+  snapshot     Json
+  startedAt    DateTime  @default(now())
+  finishedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  definition ApprovalDefinition @relation(fields: [definitionId], references: [id])
+  steps      ApprovalStep[]
+
+  @@index([tenantId, status, applicantId])
+  @@index([tenantId, entityType, entityId])
+}
+
+model ApprovalStep {
+  id         String    @id @default(cuid())
+  instanceId String
+  stepIndex  Int
+  approverId String
+  action     String? // APPROVE|REJECT|PENDING
+  comment    String?
+  actedAt    DateTime?
+  createdAt  DateTime  @default(now())
+
+  instance ApprovalInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  @@index([instanceId, stepIndex])
+  @@index([approverId, action])
+}
+
+model Notification {
+  id         String   @id @default(cuid())
+  tenantId   String
+  userId     String
+  type       String
+  title      String
+  body       String?
+  entityType String?
+  entityId   String?
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([tenantId, userId, isRead, createdAt])
+}
+
+/// 手机推送设备（APNs / FCM）：App 登录后登记，通知按接收人推送到其全部设备
+model DeviceToken {
+  id         String   @id @default(cuid())
+  tenantId   String
+  userId     String
+  platform   String // ios | android
+  token      String   @unique
+  appVersion String?
+  lastSeenAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  @@index([tenantId, userId])
+}
+
+// ========== M12 平台 ==========
+
+model Attachment {
+  id          String    @id @default(cuid())
+  tenantId    String
+  entityType  String
+  entityId    String
+  fileName    String
+  mimeType    String
+  size        Int
+  storageKey  String
+  createdById String
+  createdAt   DateTime  @default(now())
+  deletedAt   DateTime?
+
+  @@index([tenantId, entityType, entityId])
+}
+
+model Webhook {
+  id        String   @id @default(cuid())
+  tenantId  String
+  url       String
+  secret    String
+  events    Json
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  deliveries WebhookDelivery[]
+}
+
+model WebhookDelivery {
+  id           String   @id @default(cuid())
+  tenantId     String
+  webhookId    String
+  event        String
+  payload      Json
+  responseCode Int?
+  success      Boolean  @default(false)
+  at           DateTime @default(now())
+
+  webhook Webhook @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  @@index([webhookId, at])
+}
+
+model ApiToken {
+  id          String    @id @default(cuid())
+  tenantId    String
+  name        String
+  tokenHash   String
+  scopes      Json
+  expiresAt   DateTime?
+  lastUsedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  createdById String
+  deletedAt   DateTime?
+
+  @@index([tenantId, deletedAt])
+}
+
+model AiSuggestion {
+  id         String   @id @default(cuid())
+  tenantId   String
+  entityType String
+  entityId   String
+  type       String // SUMMARY|NEXT|RISK
+  content    Json
+  provider   String
+  model      String?
+  createdAt  DateTime @default(now())
+
+  @@index([tenantId, entityType, entityId])
+}
+
+model DocSequence {
+  tenantId String
+  prefix   String
+  dayKey   String // yyyyMMdd
+  current  Int    @default(0)
+
+  @@id([tenantId, prefix, dayKey])
+}
+
+model GeoCache {
+  id        String   @id @default(cuid())
+  geohash   String
+  lat       Decimal  @db.Decimal(10, 7)
+  lng       Decimal  @db.Decimal(10, 7)
+  address   String
+  updatedAt DateTime @updatedAt
+
+  @@unique([geohash])
+}
+
+// ========== 集团财务（原 settings group.* JSON，2026-10-21 迁移） ==========
+
+model GroupEntity {
+  id          String    @id @default(cuid())
+  tenantId    String
+  code        String
+  name        String
+  shortName   String    @default("")
+  parentId    String?
+  type        String    @default("SUBSIDIARY") // GROUP|SUBSIDIARY|BRANCH
+  region      String    @default("")
+  industry    String    @default("")
+  status      String    @default("ACTIVE") // ACTIVE|INACTIVE
+  createdAt   DateTime  @default(now())
+  createdById String?
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@index([tenantId, deletedAt])
+}
+
+model GroupBudget {
+  id            String   @id @default(cuid())
+  tenantId      String
+  entityId      String
+  year          String
+  budgetAmount  Decimal  @default(0) @db.Decimal(18, 2)
+  expenseAmount Decimal  @default(0) @db.Decimal(18, 2)
+  note          String   @default("")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([tenantId, entityId, year])
+}
+
+model GroupExpenseClaim {
+  id             String    @id @default(cuid())
+  tenantId       String
+  entityId       String
+  category       String
+  title          String
+  amount         Decimal   @db.Decimal(18, 2)
+  status         String    @default("SUBMITTED") // SUBMITTED|APPROVED|REJECTED
+  note           String    @default("")
+  createdById    String?
+  createdByName  String    @default("")
+  createdAt      DateTime  @default(now())
+  decidedById    String?
+  decidedByName  String?
+  decidedAt      DateTime?
+  level2ById     String?
+  level2ByName   String?
+  level2At       DateTime?
+  budgetPostedAt DateTime? // 已计入预算费用（防重复记账）
+  updatedAt      DateTime  @updatedAt
+
+  @@index([tenantId, status, createdAt])
+}
+
+model GroupFundTransfer {
+  id            String    @id @default(cuid())
+  tenantId      String
+  fromEntityId  String
+  toEntityId    String
+  amount        Decimal   @db.Decimal(18, 2)
+  note          String    @default("")
+  status        String    @default("SUBMITTED") // SUBMITTED|POSTED|REJECTED
+  createdById   String?
+  createdByName String    @default("")
+  createdAt     DateTime  @default(now())
+  decidedById   String?
+  decidedByName String?
+  decidedAt     DateTime?
+  updatedAt     DateTime  @updatedAt
+
+  @@index([tenantId, status, createdAt])
+}
+
+model GroupSettlement {
+  id            String    @id @default(cuid())
+  tenantId      String
+  settleNo      String
+  fromEntityId  String
+  toEntityId    String
+  amount        Decimal   @db.Decimal(18, 2)
+  category      String    @default("服务费")
+  title         String
+  status        String    @default("DRAFT") // DRAFT|CONFIRMED|SETTLED
+  createdById   String?
+  createdByName String    @default("")
+  createdAt     DateTime  @default(now())
+  decidedById   String?
+  decidedByName String?
+  decidedAt     DateTime?
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([tenantId, settleNo])
+  @@index([tenantId, status, createdAt])
+}
+
+model GroupExpenseAlloc {
+  id          String   @id @default(cuid())
+  tenantId    String
+  totalAmount Decimal  @db.Decimal(18, 2)
+  note        String   @default("")
+  createdById String?
+  createdAt   DateTime @default(now())
+
+  lines GroupExpenseAllocLine[]
+
+  @@index([tenantId, createdAt])
+}
+
+model GroupExpenseAllocLine {
+  id         String  @id @default(cuid())
+  allocId    String
+  entityId   String
+  entityName String // 分摊时主体名称快照
+  weight     Decimal @db.Decimal(10, 4)
+  amount     Decimal @db.Decimal(18, 2)
+  sort       Int     @default(0)
+
+  alloc GroupExpenseAlloc @relation(fields: [allocId], references: [id], onDelete: Cascade)
+
+  @@index([allocId])
+  @@index([entityId])
+}
+
+model GroupAccountEntity {
+  id        String   @id @default(cuid())
+  tenantId  String
+  accountId String
+  entityId  String
+  updatedAt DateTime @updatedAt
+
+  @@unique([tenantId, accountId])
+  @@index([tenantId, entityId])
+}
+
+/// 配置了行的用户仅可见所列主体；无行表示不限制
+model GroupUserScope {
+  id       String @id @default(cuid())
+  tenantId String
+  userId   String
+  entityId String
+
+  @@unique([tenantId, userId, entityId])
+}
+
+// ========== 合同与报价单据（原 settings JSON，2026-10-21 迁移） ==========
+
+model Invoice {
+  id            String   @id @default(cuid())
+  tenantId      String
+  contractId    String
+  contractNo    String // 开票时合同号快照
+  invoiceNo     String
+  amount        Decimal  @db.Decimal(18, 2)
+  type          String   @default("VAT_SPECIAL")
+  status        String   @default("ISSUED") // ISSUED|VOID|REVERSED
+  remark        String   @default("")
+  createdById   String?
+  createdByName String   @default("")
+  createdAt     DateTime @default(now())
+  updatedById   String?
+  updatedByName String?
+  updatedAt     DateTime @updatedAt
+
+  @@index([tenantId, contractId, status])
+  @@index([tenantId, createdAt])
+}
+
+model ContractChangeOrder {
+  id            String    @id @default(cuid())
+  tenantId      String
+  contractId    String
+  contractNo    String
+  title         String
+  reason        String    @default("")
+  amountDelta   Decimal   @default(0) @db.Decimal(18, 2) // 可为负
+  status        String    @default("PENDING") // PENDING|APPROVED|REJECTED
+  createdById   String?
+  createdByName String    @default("")
+  createdAt     DateTime  @default(now())
+  decidedById   String?
+  decidedByName String?
+  decidedAt     DateTime?
+  updatedAt     DateTime  @updatedAt
+
+  @@index([tenantId, contractId])
+  @@index([tenantId, createdAt])
+}
+
+model ESignSeal {
+  id            String   @id @default(cuid())
+  tenantId      String
+  name          String
+  type          String   @default("COMPANY") // COMPANY|CONTRACT|FINANCE|PERSONAL
+  party         String   @default("B") // A=甲方 B=乙方
+  status        String   @default("ACTIVE")
+  createdById   String?
+  createdByName String   @default("")
+  createdAt     DateTime @default(now())
+
+  @@index([tenantId, createdAt])
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  tenantId    String
+  code        String
+  name        String
+  accountId   String?
+  accountName String    @default("")
+  status      String    @default("PLANNING") // PLANNING|BIDDING|WON|DELIVERING|CLOSED
+  ownerId     String?
+  ownerName   String    @default("")
+  budget      Decimal   @default(0) @db.Decimal(18, 2)
+  startDate   String    @default("") // YYYY-MM-DD
+  endDate     String    @default("")
+  description String    @default("")
+  milestones  Json      @default("[]") // [{text, done, due?}]
+  createdById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@index([tenantId, deletedAt, createdAt])
+}
+
+model QuoteShareToken {
+  id          String   @id @default(cuid())
+  tenantId    String
+  token       String   @unique
+  quoteId     String
+  createdById String?
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+
+  @@index([tenantId, quoteId])
+}
+
+/// 报价行修改前的版本快照（用于版本对比）
+model QuoteSnapshot {
+  id            String   @id @default(cuid())
+  tenantId      String
+  quoteId       String
+  version       Int
+  total         Decimal  @db.Decimal(18, 2)
+  lines         Json
+  changedById   String?
+  changedByName String   @default("")
+  changedAt     DateTime @default(now())
+
+  @@unique([quoteId, version])
+  @@index([tenantId, quoteId])
+}
+
+// ========== 模板与知识内容（原 settings JSON，2026-10-21 迁移） ==========
+
+/// 合同 / 报价模板
+model DocTemplate {
+  id              String    @id @default(cuid())
+  tenantId        String
+  kind            String // CONTRACT|QUOTE
+  name            String
+  category        String    @default("")
+  description     String    @default("")
+  terms           String    @default("")
+  defaultDuration String    @default("")
+  defaultPayment  String    @default("")
+  lines           Json      @default("[]") // 报价模板行：[{productId, name?, qty, unitPrice?, discountRate?}]
+  content         String    @default("") // 可编辑正文 HTML
+  file            Json? // {fileName, fileUrl, fileType, uploadedAt}
+  autoParsed      Boolean   @default(false)
+  approveStatus   String? // PENDING|APPROVED|REJECTED
+  approveNote     String    @default("")
+  approvedByName  String?
+  approvedAt      DateTime?
+  published       Boolean   @default(false)
+  publishedAt     DateTime?
+  publishedByName String?
+  createdById     String?
+  createdByName   String    @default("")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  versions DocTemplateVersion[]
+  logs     DocTemplateApprovalLog[]
+
+  @@index([tenantId, kind, deletedAt])
+}
+
+/// 模板正文的历史版本（每次修改前的内容）
+model DocTemplateVersion {
+  id         String   @id @default(cuid())
+  templateId String
+  content    String
+  createdAt  DateTime @default(now())
+
+  template DocTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([templateId, createdAt])
+}
+
+model DocTemplateApprovalLog {
+  id         String   @id @default(cuid())
+  templateId String
+  action     String // SUBMIT|APPROVE|REJECT
+  status     String
+  note       String   @default("")
+  byId       String?
+  byName     String   @default("")
+  at         DateTime @default(now())
+
+  template DocTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([templateId, at])
+}
+
+model EmailTemplate {
+  id            String    @id @default(cuid())
+  tenantId      String
+  name          String
+  subject       String
+  body          String
+  category      String    @default("general")
+  createdById   String?
+  createdByName String    @default("")
+  createdAt     DateTime  @default(now())
+  deletedAt     DateTime?
+
+  @@index([tenantId, deletedAt])
+}
+
+/// 跟进话术模板（租户自定义；内置模板在代码中）
+model ActivityTemplate {
+  id          String    @id @default(cuid())
+  tenantId    String
+  name        String
+  content     String
+  category    String    @default("custom")
+  createdById String?
+  createdAt   DateTime  @default(now())
+  deletedAt   DateTime?
+
+  @@index([tenantId, deletedAt])
+}
+
+model KnowledgeArticle {
+  id         String    @id @default(cuid())
+  tenantId   String
+  title      String
+  category   String    @default("general")
+  content    String    @default("")
+  tags       String    @default("") // 逗号分隔
+  authorId   String?
+  authorName String    @default("")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  @@index([tenantId, deletedAt, category])
+}
+
+// ========== 客户成功与营销（原 settings JSON，2026-10-21 迁移） ==========
+
+model EmailSend {
+  id           String    @id @default(cuid())
+  tenantId     String
+  to           String
+  toName       String    @default("")
+  subject      String
+  body         String    @default("")
+  html         String    @default("")
+  templateId   String    @default("")
+  entityType   String    @default("")
+  entityId     String    @default("")
+  sentById     String?
+  sentByName   String    @default("")
+  sentAt       DateTime  @default(now())
+  status       String    @default("SENT") // SENT|OPENED|CLICKED|BOUNCED
+  openCount    Int       @default(0)
+  openedAt     DateTime?
+  clickCount   Int       @default(0)
+  clickedAt    DateTime?
+  lastClickUrl String?
+
+  @@index([tenantId, sentAt])
+  @@index([tenantId, entityType, entityId])
+}
+
+model Meeting {
+  id            String   @id @default(cuid())
+  tenantId      String
+  title         String
+  entityType    String   @default("ACCOUNT")
+  entityId      String   @default("")
+  heldAt        DateTime @default(now())
+  attendees     String   @default("")
+  agenda        String   @default("")
+  decisions     String   @default("")
+  actions       String   @default("") // 原始行动项文本
+  createdById   String?
+  createdByName String   @default("")
+  createdAt     DateTime @default(now())
+
+  actionItems MeetingAction[]
+
+  @@index([tenantId, heldAt])
+  @@index([tenantId, entityType, entityId])
+}
+
+model MeetingAction {
+  id        String  @id @default(cuid())
+  meetingId String
+  sort      Int
+  text      String
+  owner     String  @default("")
+  due       String  @default("")
+  done      Boolean @default(false)
+
+  meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  @@unique([meetingId, sort])
+}
+
+model NpsScore {
+  id            String   @id @default(cuid())
+  tenantId      String
+  accountId     String
+  accountName   String // 评分时客户名称快照
+  contactName   String   @default("")
+  score         Int
+  comment       String   @default("")
+  createdById   String?
+  createdByName String   @default("")
+  createdAt     DateTime @default(now())
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, accountId])
+}
+
+model ChannelPartner {
+  id          String    @id @default(cuid())
+  tenantId    String
+  name        String
+  contactName String    @default("")
+  phone       String    @default("")
+  region      String    @default("")
+  remark      String    @default("")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@index([tenantId, deletedAt])
+}
+
+/// 客户成功计划（每客户一份）
+model SuccessPlan {
+  id            String   @id @default(cuid())
+  tenantId      String
+  accountId     String
+  goals         String   @default("")
+  milestones    Json     @default("[]") // [{text, done}]
+  adoption      Int      @default(0) // 0-100
+  champion      String   @default("")
+  risks         String   @default("")
+  nextReview    String   @default("") // YYYY-MM-DD
+  updatedById   String?
+  updatedByName String   @default("")
+  updatedAt     DateTime @updatedAt
+
+  @@unique([tenantId, accountId])
+}
+
+model CustomerSegment {
+  id            String    @id @default(cuid())
+  tenantId      String
+  name          String
+  stage         String    @default("")
+  industry      String    @default("")
+  level         String    @default("")
+  tag           String    @default("")
+  minAmount     String    @default("")
+  note          String    @default("")
+  autoOutreach  Boolean   @default(false)
+  createdById   String?
+  createdByName String    @default("")
+  createdAt     DateTime  @default(now())
+  deletedAt     DateTime?
+
+  @@index([tenantId, deletedAt])
+}
+
+// ========== 报表与商机记录（原 settings JSON，2026-10-21 迁移） ==========
+
+/// 佣金发放记录：每期每人一条，amount 为确认时的计佣快照
+model CommissionPayout {
+  id            String   @id @default(cuid())
+  tenantId      String
+  periodKey     String // YYYY-MM
+  userId        String
+  userName      String
+  amount        Decimal  @db.Decimal(18, 2)
+  status        String   @default("PENDING") // PENDING|CONFIRMED|PAID
+  note          String   @default("")
+  updatedById   String?
+  updatedByName String   @default("")
+  updatedAt     DateTime @updatedAt
+
+  @@unique([tenantId, periodKey, userId])
+}
+
+/// 销售预测提交：每月每人一条
+model ForecastCommit {
+  id           String   @id @default(cuid())
+  tenantId     String
+  month        String // YYYY-MM
+  userId       String
+  userName     String
+  commitAmount Decimal  @default(0) @db.Decimal(18, 2)
+  bestAmount   Decimal  @default(0) @db.Decimal(18, 2)
+  worstAmount  Decimal  @default(0) @db.Decimal(18, 2)
+  note         String   @default("")
+  submittedAt  DateTime @default(now())
+
+  @@unique([tenantId, month, userId])
+}
+
+/// 商机作战卡（每商机一份）
+model OpportunityBattlecard {
+  id            String   @id @default(cuid())
+  tenantId      String
+  opportunityId String
+  competitors   String   @default("")
+  stakeholders  String   @default("")
+  winThemes     String   @default("")
+  risks         String   @default("")
+  actions       Json     @default("[]") // [{text, done}]
+  updatedById   String?
+  updatedByName String   @default("")
+  updatedAt     DateTime @updatedAt
+
+  @@unique([tenantId, opportunityId])
+}
+
+/// 续约剧本进度：accountId 为空表示用户自己的全局剧本
+model PlaybookProgress {
+  id        String   @id @default(cuid())
+  tenantId  String
+  accountId String?
+  userId    String?
+  steps     Json     @default("{}") // {stepKey: done}
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId, accountId])
+  @@index([tenantId, userId])
+}
+
+/// 健康分每日快照：kind=ACCOUNT 时 subjectId 为客户 id；kind=FUNNEL 时为空串
+model HealthSnapshot {
+  id        String @id @default(cuid())
+  tenantId  String
+  kind      String // ACCOUNT|FUNNEL
+  subjectId String @default("")
+  date      String // YYYY-MM-DD
+  score     Float
+  level     String @default("")
+
+  @@unique([tenantId, kind, subjectId, date])
+}
+
+/// 系统健康巡检报告；tenantId 为空表示全系统（定时任务）
+model SystemHealthReport {
+  id          String   @id @default(cuid())
+  tenantId    String?
+  generatedAt DateTime @default(now())
+  status      String // HEALTHY|ATTENTION
+  report      Json
+
+  @@index([tenantId, generatedAt])
+}
+
+/// 汇率：1 单位 currency = rate 单位本位币；按 effectiveDate 生效（取单据日期当天或之前最近的一条）
+model ExchangeRate {
+  id            String   @id @default(cuid())
+  tenantId      String
+  currency      String
+  rate          Decimal  @db.Decimal(18, 8)
+  effectiveDate DateTime @db.Date
+  /// MANUAL 手工录入 | ECB 欧洲央行参考汇率（自动拉取）
+  source        String   @default("MANUAL")
+  createdById   String?
+  createdAt     DateTime @default(now())
+
+  @@unique([tenantId, currency, effectiveDate])
+}
+
+/// 企业微信 / 钉钉 / 飞书账号与 CRM 用户的绑定（通讯录同步或扫码登录时建立）
+model UserIdentity {
+  id         String   @id @default(cuid())
+  tenantId   String
+  userId     String
+  /// wechat_work | dingtalk | feishu
+  provider   String
+  /// 平台内的用户 ID：企业微信 userid、钉钉 userid、飞书 open_id
+  externalId String
+  createdAt  DateTime @default(now())
+
+  @@unique([tenantId, provider, externalId])
+  @@unique([userId, provider])
+  @@index([tenantId, userId])
+}

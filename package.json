@@ -1,0 +1,34 @@
+{
+  "name": "ai-crm",
+  "private": true,
+  "version": "0.2.0",
+  "license": "Apache-2.0",
+  "author": "Suzhou Atecent Information Technology Co., Ltd.",
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "test:e2e": "playwright test",
+    "smoke": "bash scripts/smoke.sh",
+    "migrate": "pnpm -C apps/api exec prisma migrate dev",
+    "seed": "pnpm -C apps/api exec node scripts/seed-cli.mjs",
+    "mobile:build:web": "pnpm -C apps/web build",
+    "mobile:sync:cap": "pnpm -C apps/mobile exec cap sync",
+    "mobile:ios": "pnpm -C apps/mobile exec cap open ios",
+    "mobile:android": "pnpm -C apps/mobile exec cap open android"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
+    "@types/supertest": "^7.2.1",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "supertest": "^7.0.0",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8"
+  }
+}

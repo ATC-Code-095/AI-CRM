@@ -1,0 +1,111 @@
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    # 集成测试与 E2E 需要真实数据库：每次运行都是全新的空库
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: crm
+          POSTGRES_PASSWORD: crm
+          POSTGRES_DB: ai_crm
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U crm -d ai_crm"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://crm:crm@localhost:5432/ai_crm
+      REDIS_URL: redis://localhost:6379
+      JWT_ACCESS_SECRET: ci-access-secret-0123456789abcdef0123456789
+      JWT_REFRESH_SECRET: ci-refresh-secret-0123456789abcdef012345678
+      # 开发模式：初始化写入演示账号（测试用固定演示密码）
+      NODE_ENV: development
+      LOGIN_RATE_LIMIT: '200'
+      API_URL: http://127.0.0.1:3001
+
+    steps:
+      - uses: actions/checkout@v4
+      # pnpm 版本取自 package.json 的 packageManager（两处同时指定会报错）
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm -C apps/api exec prisma generate
+
+      - name: Check i18n dictionaries
+        run: node scripts/check-i18n.mjs
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Lint
+        run: pnpm lint
+
+      - name: Migrate database
+        run: pnpm -C apps/api exec prisma migrate deploy
+      - name: Build API
+        run: pnpm -C apps/api build
+
+      - name: Start API (seeds roles, permissions and demo accounts)
+        run: |
+          (cd apps/api && AUTO_SEED=true nohup node dist/main.js > ../../api.log 2>&1 &)
+          for i in $(seq 1 60); do
+            curl -sf "$API_URL/api/v1/health" && exit 0
+            sleep 1
+          done
+          echo "API did not become healthy"; cat api.log; exit 1
+
+      # 冒烟脚本走一遍「线索 → 客户 → 商机 → 报价 → 合同 → 回款」，同时为后续测试准备业务数据
+      - name: Smoke test
+        run: BASE="$API_URL/api/v1" bash scripts/smoke.sh
+
+      - name: API unit + integration tests
+        run: pnpm -C apps/api test
+
+      - name: Web unit tests
+        run: pnpm -C apps/web test
+      - name: Build web
+        run: pnpm -C apps/web exec vite build
+
+      - name: OpenAPI contract
+        run: |
+          node scripts/export-openapi.mjs
+          node scripts/check-openapi.mjs
+
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+      - name: E2E tests
+        env:
+          PW_CHANNEL: chromium
+        run: pnpm test:e2e
+
+      - name: API log
+        if: failure()
+        run: tail -n 200 api.log || true
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          if-no-files-found: ignore

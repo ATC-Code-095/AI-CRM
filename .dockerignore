@@ -1,0 +1,18 @@
+# 构建上下文只需要源码；依赖与产物在镜像内重新生成
+**/node_modules
+**/dist
+**/*.tsbuildinfo
+.git
+.env
+**/.env
+.env.local
+storage
+.storage
+backups
+test-results
+playwright-report
+coverage
+apps/mobile/android
+apps/mobile/ios
+apps/mobile/www
+apps/harmony

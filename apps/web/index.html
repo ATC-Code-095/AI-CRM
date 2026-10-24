@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="theme-color" content="#2f6bff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="智销CRM" />
+    <meta name="application-name" content="智销CRM" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>智销 CRM</title>
+    <script>
+      // 兜底：浏览器扩展在无摄像头环境调用 getUserMedia 时不再空指针
+      try {
+        if (!navigator.mediaDevices) {
+          Object.defineProperty(navigator, 'mediaDevices', {
+            value: {},
+            configurable: true,
+          })
+        }
+        if (typeof navigator.mediaDevices.getUserMedia !== 'function') {
+          navigator.mediaDevices.getUserMedia = function () {
+            return Promise.reject(new Error('getUserMedia unavailable'))
+          }
+        }
+        if (!navigator.getUserMedia) {
+          navigator.getUserMedia = function () {
+            var err = new Error('getUserMedia unavailable')
+            if (arguments.length >= 3) arguments[2](err)
+            return Promise.reject(err)
+          }
+        }
+      } catch (e) {
+        /* ignore */
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // PWA：添加到主屏幕 / 离线壳
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/sw.js').catch(function () {})
+        })
+      }
+    </script>
+  </body>
+</html>

@@ -4,13 +4,13 @@
 > - **手机浏览器 / PWA**：直接打开系统网址，可「添加到主屏幕」。无需打包，随网页部署自动更新。
 > - **原生 App**：本文。App 内置网页包，接口请求发往配置的后端地址。
 
-## 现状（2026-10-22）
+## 现状（2026-10-24）
 
 | 平台 | 工程 | 状态 |
 |------|------|------|
-| Android | `apps/mobile/android`（Capacitor 6） | ✅ 已生成，包名 `com.itecent.crm`，定位权限已配置；**尚未在 Android Studio 中编译验证** |
-| iOS | `apps/mobile/ios` | ⏳ 未生成：需要装有 Xcode 与 CocoaPods 的 Mac（见第 4 节） |
-| 鸿蒙 NEXT | `apps/harmony` | ⏳ 只有网页包与桥接说明，需在 DevEco Studio 中新建工程（见第 5 节） |
+| Android | `apps/mobile/android`（Capacitor 6） | ✅ 已生成，包名 `com.itecent.crm`，定位、推送权限已配置；**尚未在 Android Studio 中编译验证** |
+| iOS | `apps/mobile/ios`（Capacitor 6，Swift Package Manager，无需 CocoaPods） | ✅ 已在 Xcode 27 编译，iPhone 模拟器（iOS 27）运行正常，可连接后端；最低系统 iOS 15，已采用 Scene 生命周期（iOS 27 强制要求）；推送、定位 / 相机 / 相册说明已配置。真机与推送需开发者账号签名后验证 |
+| 鸿蒙 NEXT | `apps/harmony`（ArkTS，API 12+） | ✅ 完整工程：ArkWeb 内置网页包，推送、定位、拨号、附件选择、通知跳转已实现；**尚未在 DevEco Studio 中编译验证** |
 
 已在代码中完成：接口地址可配置（`VITE_API_BASE`）、后端放行 App 来源的跨域请求、分享链接与二维码在 App 内使用服务器地址、App 包不含 Service Worker。以「网页与接口不同源」的方式模拟 App 运行，E2E 11 项全部通过，所有接口请求均发往配置的后端。
 
@@ -23,8 +23,8 @@
 | **后端 HTTPS** | 正式发布必须用 HTTPS 地址（如 `https://crm.example.com`）。iOS 默认禁止 HTTP；Android 虽可放行，但明文传输登录令牌不安全。HTTP 只用于内网测试 |
 | Node / pnpm | 与网页开发相同，仓库根目录 `pnpm install` |
 | Android | [Android Studio](https://developer.android.com/studio)（自带 JDK 17 与 Android SDK） |
-| iOS | Xcode（App Store 安装）+ CocoaPods（`brew install cocoapods`）+ Apple 开发者账号 |
-| 鸿蒙 | DevEco Studio + 华为开发者账号 |
+| iOS | Xcode（App Store 安装）+ Apple 开发者账号。首次使用 Xcode 需执行一次 `sudo xcodebuild -runFirstLaunch`，用模拟器还要 `xcodebuild -downloadPlatform iOS` |
+| 鸿蒙 | [DevEco Studio](https://developer.huawei.com/consumer/cn/deveco-studio/)（含 HarmonyOS SDK，API 12+）+ 华为开发者账号 |
 
 ---
 
@@ -40,13 +40,13 @@ VITE_API_BASE=https://crm.example.com bash scripts/sync-mobile.sh
 
 1. 用该后端地址构建网页（输出到临时目录，不影响网页部署用的 `apps/web/dist`）；
 2. 去掉 Service Worker（App 内不需要离线缓存，避免更新后仍显示旧页面）；
-3. 复制到 `apps/mobile/www` 与 `apps/harmony/rawfile/www`；
+3. 复制到 `apps/mobile/www` 与鸿蒙工程 `apps/harmony/entry/src/main/resources/rawfile/www`；
 4. 若已有原生工程，执行 `cap sync` 同步到 Android / iOS 工程。
 
 最后一行应为 `MOBILE_SYNC_OK  网页包版本 0.2.0 · <提交哈希>`。
 
 > - 地址填 `http://...` 时脚本会提示仅限内网测试，并自动为 Android 放行明文请求。
-> - `apps/mobile/www`、`apps/harmony/rawfile/www` 是生成物，不进 git。
+> - `apps/mobile/www`、`apps/harmony/entry/src/main/resources/rawfile/www` 是生成物，不进 git。
 
 ---
 
@@ -90,18 +90,22 @@ VITE_API_BASE=https://crm.example.com bash scripts/sync-mobile.sh
 
 ## 4. iOS（需在装有 Xcode 的 Mac 上执行）
 
-1. 安装 Xcode、CocoaPods，执行 `sudo xcode-select -s /Applications/Xcode.app`。
-2. 完成第 2 步，然后生成工程：
+工程已生成在 `apps/mobile/ios`，用 Swift Package Manager 管理依赖（不需要 CocoaPods）。
+
+1. 首次使用 Xcode：
    ```bash
-   cd apps/mobile
-   VITE_API_BASE=https://crm.example.com pnpm exec cap add ios
-   pnpm exec cap open ios
+   sudo xcodebuild -runFirstLaunch          # 安装 Xcode 附加组件（需要电脑管理员密码）
+   xcodebuild -downloadPlatform iOS         # 下载 iOS 模拟器（只用真机可跳过）
    ```
-3. 在 Xcode 中：
-   - **Signing & Capabilities** 选择开发者团队，Bundle Identifier 为 `com.itecent.crm`（需在 Apple 开发者后台登记）。
-   - `Info.plist` 增加定位说明 **Privacy - Location When In Use Usage Description**，如「用于拜访打卡记录位置」。
-4. 选真机或模拟器运行；上架用 **Product → Archive**。
-5. 生成后把 `apps/mobile/ios` 提交进仓库（Capacitor 自带的 `.gitignore` 会排除生成物）。
+2. 完成第 2 步（会自动 `cap sync` 到 iOS 工程），然后打开工程：
+   ```bash
+   cd apps/mobile && pnpm exec cap open ios
+   ```
+   首次打开时 Xcode 会自动下载 Capacitor 的 Swift 包，等待左侧 **Package Dependencies** 加载完成。
+3. 在 Xcode 中选中 **App** target → **Signing & Capabilities**：
+   - **Team** 选择你的开发者团队；Bundle Identifier 为 `com.itecent.crm`（需在 Apple 开发者后台登记，或改成你自己的）。
+   - 已配置 **Push Notifications** 能力（`App/App.entitlements`）；定位、相机、相册的使用说明已写入 `Info.plist`。
+4. 选模拟器或连接的 iPhone，点 ▶ 运行；上架用 **Product → Archive**，再在 Organizer 上传到 App Store Connect / TestFlight。
 
 > iOS 只能连 HTTPS 后端。内网 HTTP 测试需在 `Info.plist` 加 App Transport Security 例外，**正式包不要保留**。
 
@@ -109,14 +113,30 @@ VITE_API_BASE=https://crm.example.com bash scripts/sync-mobile.sh
 
 ## 5. 鸿蒙 NEXT（DevEco Studio）
 
-1. DevEco Studio 新建 **Empty Ability** 工程（API 12+）。
-2. 完成第 2 步后，把 `apps/harmony/rawfile/www` 整个复制到工程 `entry/src/main/resources/rawfile/www`。
-3. 页面用 `Web` 组件加载 `$rawfile('www/index.html')`，开启 `javaScriptAccess`、`domStorageAccess`（登录状态保存在 localStorage）。
-4. 用 `javaScriptProxy` 注入与 `packages/mobile-bridge` 同名的方法（定位、拨号），参考 `apps/harmony/bridge.ts`。
-5. `module.json5` 声明权限：`ohos.permission.INTERNET`、`ohos.permission.APPROXIMATELY_LOCATION`、`ohos.permission.LOCATION`。
-6. **跨域**：rawfile 页面的来源与 iOS / Android 不同。首次运行时在后端日志或浏览器调试中查看请求的 `Origin`，把它加到服务器环境变量 `CORS_ORIGIN`（逗号分隔，见第 7 节）。
-7. **推送**：按 `apps/harmony/README.md`「推送（Push Kit）」注入 `CrmHarmony.getPushToken` 并转发通知点击，服务器配置见第 6.3 节。
-8. 构建 `.app` 并在 AppGallery Connect 上架。
+工程已在 `apps/harmony`，结构与 DevEco Studio 的 Empty Ability（Stage 模型）一致：
+
+| 文件 | 作用 |
+|------|------|
+| `AppScope/app.json5` | 包名 `com.itecent.crm`、版本号、应用名 |
+| `entry/src/main/module.json5` | 入口 Ability、权限（网络、定位） |
+| `entry/src/main/ets/pages/Index.ets` | ArkWeb 页面：加载内置网页包，处理定位授权、拨号、附件选择、返回键 |
+| `entry/src/main/ets/common/RawfileServer.ets` | 把 `https://localhost/…` 映射到 `rawfile/www`，单页路由回落到 `index.html` |
+| `entry/src/main/ets/common/CrmHarmony.ets` | 注入网页的 `window.CrmHarmony`：`getPushToken`、`callPhone`、`getPlatform` |
+| `entry/src/main/ets/entryability/EntryAbility.ets` | 点击通知拉起时取出单据信息，交给网页跳转 |
+
+步骤：
+
+1. 完成第 2 步，网页包会同步到 `entry/src/main/resources/rawfile/www`。
+2. DevEco Studio → **Open** → 选择 `apps/harmony` 目录，等待同步（会自动生成 `oh_modules`、`local.properties` 等，不进 git）。
+3. **签名**：File → Project Structure → **Signing Configs**，登录华为开发者账号后勾选 **Automatically generate signature**（调试用）；正式发布在 AppGallery Connect 申请发布证书与 Profile。签名信息写入 `build-profile.json5`，**含密码，不要提交到公开仓库**。
+4. 连接鸿蒙 NEXT 真机或模拟器，点 ▶ 运行。
+5. 正式包：Build → **Build Hap(s)/APP(s) → Build APP(s)**，生成 `.app` 上传 AppGallery Connect。
+
+说明：
+
+- 网页以 `https://localhost` 地址加载，与 Android App 同源，服务器默认已放行跨域，**不需要**额外配置 `CORS_ORIGIN`。
+- 后端是 `http://` 的内网测试环境时，把 `Index.ets` 中的 `MixedMode.None` 改为 `MixedMode.All`；正式环境请使用 HTTPS。
+- 推送：在 AppGallery Connect 开通推送服务（第 6.3 节）。App 登录后会请求通知权限并登记设备；点击通知会打开对应单据。
 
 ---
 
@@ -141,11 +161,11 @@ App 登录后会申请通知权限并把设备登记到账号；服务器配置�
 1. AppGallery Connect → 你的项目 → **推送服务** → 开通。
 2. AppGallery Connect → 项目设置 → **服务账号** → 创建并下载服务账号密钥（JSON，含 `project_id`、`key_id`、`sub_account`、`private_key`）。
 3. 服务器环境变量：`HMS_SERVICE_ACCOUNT`（JSON 内容）或 `HMS_SERVICE_ACCOUNT_FILE`（文件路径），重启 API。
-4. 鸿蒙壳按 `apps/harmony/README.md` 把推送令牌交给网页。
+4. 鸿蒙工程已实现推送令牌登记与通知跳转，开通推送服务后无需改代码。
 
 ### 6.4 确认
 
-系统设置 → 监控与自动化 → **手机推送** 显示两条通道是否已配置。用 App 登录后，让同事给你分配一条线索，手机应收到推送。
+系统设置 → 监控与自动化 → **手机推送** 显示各推送通道是否已配置。用 App 登录后，让同事给你分配一条线索，手机应收到推送。
 
 
 ## 7. 后端配置（服务器上）

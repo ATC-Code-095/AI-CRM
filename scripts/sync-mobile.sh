@@ -24,8 +24,8 @@ echo "[1/3] 构建网页包（API: $VITE_API_BASE）"
 # App 内不使用 Service Worker 离线缓存：版本更新后它会继续提供旧页面
 rm -f "$OUT/sw.js"
 
-echo "[2/3] 复制到 apps/mobile/www 与 apps/harmony/rawfile/www"
-for dest in "$ROOT/apps/mobile/www" "$ROOT/apps/harmony/rawfile/www"; do
+echo "[2/3] 复制到 apps/mobile/www 与鸿蒙工程 entry/src/main/resources/rawfile/www"
+for dest in "$ROOT/apps/mobile/www" "$ROOT/apps/harmony/entry/src/main/resources/rawfile/www"; do
   rm -rf "$dest"
   mkdir -p "$dest"
   cp -R "$OUT/." "$dest/"

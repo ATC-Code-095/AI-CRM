@@ -5,8 +5,8 @@ const PASS = process.env.PASS ?? 'Demo@12345'
 
 test('登录并进入工作台', async ({ page }) => {
   await page.goto('/login', { waitUntil: 'domcontentloaded' })
-  await expect(page.getByLabel('Email')).toBeVisible({ timeout: 15000 })
-  await page.getByLabel('Email').fill(EMAIL)
+  await expect(page.getByLabel(/^(Email|邮箱)$/)).toBeVisible({ timeout: 15000 })
+  await page.getByLabel(/^(Email|邮箱)$/).fill(EMAIL)
   await page.locator('input[type="password"]').fill(PASS)
   await page.getByRole('button', { name: /确\s*认|Confirm|登\s*录/i }).click()
   await expect(page).toHaveURL(/\/home$/, { timeout: 15000 })
@@ -14,7 +14,7 @@ test('登录并进入工作台', async ({ page }) => {
 
 test('线索列表可见', async ({ page }) => {
   await page.goto('/login')
-  await page.getByLabel('Email').fill(EMAIL)
+  await page.getByLabel(/^(Email|邮箱)$/).fill(EMAIL)
   await page.locator('input[type="password"]').fill(PASS)
   await page.getByRole('button', { name: /确\s*认|Confirm/i }).click()
   await page.waitForURL(/\/home/)
@@ -25,7 +25,7 @@ test('线索列表可见', async ({ page }) => {
 
 test('商机看板加载', async ({ page }) => {
   await page.goto('/login')
-  await page.getByLabel('Email').fill(EMAIL)
+  await page.getByLabel(/^(Email|邮箱)$/).fill(EMAIL)
   await page.locator('input[type="password"]').fill(PASS)
   await page.getByRole('button', { name: /确\s*认|Confirm/i }).click()
   await page.waitForURL(/\/home/)
@@ -38,7 +38,7 @@ test('商机看板加载', async ({ page }) => {
 
 test('审批与报表入口', async ({ page }) => {
   await page.goto('/login')
-  await page.getByLabel('Email').fill(EMAIL)
+  await page.getByLabel(/^(Email|邮箱)$/).fill(EMAIL)
   await page.locator('input[type="password"]').fill(PASS)
   await page.getByRole('button', { name: /确\s*认|Confirm/i }).click()
   await page.waitForURL(/\/home/)
@@ -53,7 +53,7 @@ test('审批与报表入口', async ({ page }) => {
 
 test('组织管理页', async ({ page }) => {
   await page.goto('/login')
-  await page.getByLabel('Email').fill(EMAIL)
+  await page.getByLabel(/^(Email|邮箱)$/).fill(EMAIL)
   await page.locator('input[type="password"]').fill(PASS)
   await page.getByRole('button', { name: /确\s*认|Confirm/i }).click()
   await page.waitForURL(/\/home/)
@@ -65,7 +65,7 @@ test('组织管理页', async ({ page }) => {
 
 test('Webhook 与审计页', async ({ page }) => {
   await page.goto('/login')
-  await page.getByLabel('Email').fill(EMAIL)
+  await page.getByLabel(/^(Email|邮箱)$/).fill(EMAIL)
   await page.locator('input[type="password"]').fill(PASS)
   await page.getByRole('button', { name: /确\s*认|Confirm/i }).click()
   await page.waitForURL(/\/home/)
@@ -80,7 +80,7 @@ test('Webhook 与审计页', async ({ page }) => {
 
 test('导入 CSV 入口', async ({ page }) => {
   await page.goto('/login')
-  await page.getByLabel('Email').fill(EMAIL)
+  await page.getByLabel(/^(Email|邮箱)$/).fill(EMAIL)
   await page.locator('input[type="password"]').fill(PASS)
   await page.getByRole('button', { name: /确\s*认|Confirm/i }).click()
   await page.waitForURL(/\/home/)
@@ -90,7 +90,7 @@ test('导入 CSV 入口', async ({ page }) => {
 
 test('报价列表可打开', async ({ page }) => {
   await page.goto('/login')
-  await page.getByLabel('Email').fill(EMAIL)
+  await page.getByLabel(/^(Email|邮箱)$/).fill(EMAIL)
   await page.locator('input[type="password"]').fill(PASS)
   await page.getByRole('button', { name: /确\s*认|Confirm/i }).click()
   await page.waitForURL(/\/home/)

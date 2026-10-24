@@ -1,0 +1,29 @@
+{
+  "app": {
+    // 签名：在 DevEco Studio「File → Project Structure → Signing Configs」自动或手动签名后会写入这里。
+    // 签名证书与密码属于个人凭证，不要提交到仓库。
+    "signingConfigs": [],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": "5.0.0(12)",
+        "runtimeOS": "HarmonyOS",
+        "buildOption": {
+          "strictMode": { "caseSensitiveCheck": true, "useNormalizedOHMUrl": true }
+        }
+      }
+    ],
+    "buildModeSet": [
+      { "name": "debug" },
+      { "name": "release" }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [{ "name": "default", "applyToProducts": ["default"] }]
+    }
+  ]
+}

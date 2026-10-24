@@ -36,7 +36,7 @@ test('客户免登录打开报价分享链接', async ({ request, browser }) => 
 
 test('集团合并报表正常打开', async ({ page }) => {
   await page.goto('/login')
-  await page.getByLabel('Email').fill(EMAIL)
+  await page.getByLabel(/^(Email|邮箱)$/).fill(EMAIL)
   await page.locator('input[type="password"]').fill(PASS)
   await page.getByRole('button', { name: /确\s*认|Confirm/i }).click()
   await page.waitForURL(/\/home/)

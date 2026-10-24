@@ -7,7 +7,7 @@ test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true
 
 test('手机端底部 Tab 可见并可进商机', async ({ page }) => {
   await page.goto('/login')
-  await page.getByLabel('Email').fill(EMAIL)
+  await page.getByLabel(/^(Email|邮箱)$/).fill(EMAIL)
   await page.locator('input[type="password"]').fill(PASS)
   await page.getByRole('button', { name: /确\s*认|Confirm|OK/i }).click()
   await page.waitForURL(/\/home/)
@@ -30,7 +30,7 @@ test('手机端底部 Tab 可见并可进商机', async ({ page }) => {
 
 test('手机端打卡按钮可见', async ({ page }) => {
   await page.goto('/login')
-  await page.getByLabel('Email').fill(EMAIL)
+  await page.getByLabel(/^(Email|邮箱)$/).fill(EMAIL)
   await page.locator('input[type="password"]').fill(PASS)
   await page.getByRole('button', { name: /确\s*认|Confirm|OK/i }).click()
   await page.waitForURL(/\/home/)
@@ -42,7 +42,7 @@ test('手机端打卡（Mock 定位）', async ({ page, context }) => {
   await context.grantPermissions(['geolocation']).catch(() => undefined)
   await context.setGeolocation({ latitude: 31.23, longitude: 121.47 }).catch(() => undefined)
   await page.goto('/login')
-  await page.getByLabel('Email').fill(EMAIL)
+  await page.getByLabel(/^(Email|邮箱)$/).fill(EMAIL)
   await page.locator('input[type="password"]').fill(PASS)
   await page.getByRole('button', { name: /确\s*认|Confirm|OK/i }).click()
   await page.waitForURL(/\/home/)

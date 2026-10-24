@@ -156,7 +156,7 @@ export async function registerNativePush(h: PushHandlers): Promise<boolean> {
 // ========== 鸿蒙 NEXT 推送（Push Kit）==========
 
 /**
- * 鸿蒙壳通过 javaScriptProxy 注入的对象（名称 CrmHarmony，见 apps/harmony/README.md）。
+ * 鸿蒙壳通过 javaScriptProxy 注入的对象（名称 CrmHarmony，实现见 apps/harmony/entry/src/main/ets/common/CrmHarmony.ets）。
  * getPushToken：ArkTS 侧调用 pushService.getToken() 后返回令牌；
  * 用户点击通知启动 App 时，ArkTS 侧调用 window.crmOnPushOpen(JSON 字符串) 交给网页跳转。
  */

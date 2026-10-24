@@ -51,7 +51,7 @@ export default function LoginPage() {
         </Typography.Title>
         <Form layout="vertical" onFinish={onFinish} requiredMark={false}>
           <Form.Item
-            label="Email"
+            label={t('login.email')}
             name="email"
             rules={[{ required: true, message: t('validation.required') }]}
           >
@@ -64,7 +64,7 @@ export default function LoginPage() {
             />
           </Form.Item>
           <Form.Item
-            label="Password"
+            label={t('login.password')}
             name="password"
             rules={[{ required: true, message: t('validation.required') }]}
           >

@@ -325,7 +325,7 @@ App 内页面与网页是同一套代码，打包时指定后端地址：
 VITE_API_BASE=https://crm.example.com bash scripts/sync-mobile.sh
 ```
 
-然后用 Android Studio（`apps/mobile/android`）或 Xcode 打包。详见 [docs/18-mobile-build.md](docs/18-mobile-build.md)。
+然后用 Android Studio（`apps/mobile/android`）、Xcode（`apps/mobile/ios`）或 DevEco Studio（`apps/harmony`，鸿蒙 NEXT）打包。详见 [docs/18-mobile-build.md](docs/18-mobile-build.md)。
 
 ### 常见问题
 

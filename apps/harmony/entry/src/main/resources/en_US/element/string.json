@@ -1,0 +1,8 @@
+{
+  "string": [
+    { "name": "module_desc", "value": "ZhiXiao CRM main module" },
+    { "name": "EntryAbility_desc", "value": "ZhiXiao CRM" },
+    { "name": "EntryAbility_label", "value": "ZhiXiao CRM" },
+    { "name": "reason_location", "value": "Records your location when you check in on a field visit" }
+  ]
+}

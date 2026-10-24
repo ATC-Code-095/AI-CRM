@@ -1,0 +1,11 @@
+{
+  "app": {
+    // 应用包名：须与 AppGallery Connect 中登记的一致（与 iOS / Android 默认相同）
+    "bundleName": "com.itecent.crm",
+    "vendor": "itecent",
+    "versionCode": 1000000,
+    "versionName": "0.2.0",
+    "icon": "$media:app_icon",
+    "label": "$string:app_name"
+  }
+}

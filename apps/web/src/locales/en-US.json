@@ -668,6 +668,8 @@
   "common.segmentDashboard": "Segment Dashboard",
   "common.renewals": "Renewals",
   "login.demoAccount": "Demo account: ",
+  "login.email": "Email",
+  "login.password": "Password",
   "help.failedToLoadManual": "Failed to load manual ({{status}})",
   "help.adminManual": "Admin Manual",
   "help.userManual": "User Manual",

@@ -1,60 +1,28 @@
-# HarmonyOS NEXT 壳
+# 智销 CRM 鸿蒙 NEXT App
 
-1. 用 DevEco Studio 新建 Empty Ability（API 12+）
-2. 用 `Web` 组件加载 `rawfile://www/index.html`（由 `apps/web/dist` 同步）
-3. 用 `javaScriptProxy` 注入与 `packages/mobile-bridge` 同名方法
-4. 定位：`geoLocationManager`；拨号：`openLink('tel:...')`
-5. 权限：`ohos.permission.APPROXIMATELY_LOCATION` 等写入 module.json5
+ArkTS（Stage 模型，API 12+）工程，用 ArkWeb 加载内置网页包，原生提供推送、定位、拨号、附件选择与通知跳转。
 
-安装包目标：HarmonyOS NEXT `.app`，**不使用 Android APK**。
+用 **DevEco Studio → Open** 打开本目录。完整的打包、签名与上架步骤见 [docs/18-mobile-build.md](../../docs/18-mobile-build.md) 第 5 节。
 
-## 推送（Push Kit）
+## 网页包
 
-服务器配置华为 Push Kit 服务账号（环境变量 `HMS_SERVICE_ACCOUNT` / `HMS_SERVICE_ACCOUNT_FILE`）后，站内通知会推送到鸿蒙 App。壳需要做三件事：
+网页包不进 git，由仓库根目录的脚本生成到 `entry/src/main/resources/rawfile/www`：
 
-1. **开通推送**：AppGallery Connect → 项目 → 推送服务 → 开通；`module.json5` 无需额外权限，首次需请求通知授权（`notificationManager.requestEnableNotification()`）。
-2. **把推送令牌交给网页**：用 `javaScriptProxy` 注入名为 `CrmHarmony` 的对象，提供异步方法 `getPushToken`。网页登录后会调用它并把令牌登记到账号（`POST /api/v1/push/devices`，平台 `harmony`）。
-3. **点击通知跳转**：通知的 `clickAction.data` 里有 `entityType`、`entityId`、`type`。App 被通知拉起时，把这份数据以 JSON 字符串交给网页的 `window.crmOnPushOpen`，网页会跳到对应单据。
-
-```ts
-// entry/src/main/ets/pages/Index.ets（示意）
-import { webview } from '@kit.ArkWeb'
-import { pushService } from '@kit.PushKit'
-import { notificationManager } from '@kit.NotificationKit'
-import { common, Want } from '@kit.AbilityKit'
-
-class CrmHarmony {
-  async getPushToken(): Promise<string> {
-    await notificationManager.requestEnableNotification().catch(() => {})
-    return await pushService.getToken()
-  }
-}
-
-@Entry
-@Component
-struct Index {
-  controller: webview.WebviewController = new webview.WebviewController()
-  bridge: CrmHarmony = new CrmHarmony()
-
-  /** 由 EntryAbility 在 onCreate / onNewWant 中，用通知拉起时的 want.parameters 调用 */
-  openFromPush(want: Want) {
-    const data = JSON.stringify(want.parameters ?? {})
-    this.controller.runJavaScript(`window.crmOnPushOpen && window.crmOnPushOpen(${JSON.stringify(data)})`)
-  }
-
-  build() {
-    Web({ src: $rawfile('www/index.html'), controller: this.controller })
-      .javaScriptAccess(true)
-      .domStorageAccess(true)
-      .javaScriptProxy({
-        object: this.bridge,
-        name: 'CrmHarmony',
-        methodList: [],
-        asyncMethodList: ['getPushToken'],
-        controller: this.controller,
-      })
-  }
-}
+```bash
+VITE_API_BASE=https://crm.example.com bash scripts/sync-mobile.sh
 ```
 
-> 以上为接入示意，具体 API 以 DevEco Studio 中 HarmonyOS SDK 版本的文档为准。
+## 与网页的约定
+
+| 方向 | 名称 | 说明 |
+|------|------|------|
+| 原生 → 网页 | `window.CrmHarmony.getPushToken()` | 请求通知授权并返回 Push Kit 令牌；网页登录后登记到服务器（平台 `harmony`） |
+| 原生 → 网页 | `window.CrmHarmony.callPhone(tel)` | 拨号；网页里的 `tel:` 链接也会被拦截并拨号 |
+| 原生 → 网页 | `window.CrmHarmony.getPlatform()` | 返回 `harmony` |
+| 网页 ← 原生 | `window.crmOnPushOpen(json)` | 用户点击通知拉起 App 时调用，参数含 `type`、`entityType`、`entityId`，网页跳到对应单据 |
+
+网页侧实现见 `packages/mobile-bridge`（`registerHarmonyPush`）与 `apps/web/src/utils/nativePush.ts`。
+
+## 页面加载方式
+
+网页以 `https://localhost/…` 的地址加载，`RawfileServer` 把这些请求映射到 rawfile 中的文件。这样与 Android App 同源，服务器已内置放行该来源的跨域请求，无需额外配置。

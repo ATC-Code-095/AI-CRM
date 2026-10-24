@@ -1,0 +1,8 @@
+{
+  "string": [
+    { "name": "module_desc", "value": "智销 CRM 主模块" },
+    { "name": "EntryAbility_desc", "value": "智销 CRM" },
+    { "name": "EntryAbility_label", "value": "智销CRM" },
+    { "name": "reason_location", "value": "外勤拜访打卡时记录你所在的位置" }
+  ]
+}

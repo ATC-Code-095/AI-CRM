@@ -668,6 +668,8 @@
   "common.segmentDashboard": "客户分群看板",
   "common.renewals": "续签工作台",
   "login.demoAccount": "演示账号：",
+  "login.email": "邮箱",
+  "login.password": "密码",
   "help.failedToLoadManual": "手册加载失败（{{status}}）",
   "help.adminManual": "管理员手册",
   "help.userManual": "用户手册",

@@ -17,7 +17,13 @@ packages/shared/dist/
 packages/mobile-bridge/dist/
 # 手机 App 网页包（由 scripts/sync-mobile.sh 生成）
 apps/mobile/www/
-apps/harmony/rawfile/www/
+apps/harmony/entry/src/main/resources/rawfile/www/
+# 鸿蒙工程的构建产物与本机配置（DevEco Studio 生成）
+apps/harmony/.hvigor/
+apps/harmony/**/build/
+apps/harmony/**/oh_modules/
+apps/harmony/local.properties
+apps/harmony/.idea/
 *.tsbuildinfo
 apps/api/prisma/migrations/**/migration_lock.toml.bak
 

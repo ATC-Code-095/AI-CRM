@@ -100,7 +100,7 @@ async function firstIds(page) {
 
 async function login(page) {
   await page.goto(`${WEB}/login`)
-  await page.getByLabel('Email').fill(EMAIL)
+  await page.getByLabel(/^(Email|邮箱)$/).fill(EMAIL)
   await page.locator('input[type="password"]').fill(PASS)
   await page.keyboard.press('Enter')
   await page.waitForURL(/\/home/, { timeout: 20000 })

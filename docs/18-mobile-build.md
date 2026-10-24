@@ -156,7 +156,7 @@ App 登录后会申请通知权限并把设备登记到账号；服务器配置�
 ### 6.1 Android（Firebase Cloud Messaging）
 
 1. 在 [Firebase 控制台](https://console.firebase.google.com/) 新建项目，添加 Android 应用，包名填 `com.itecent.crm`（或你的 `CAP_APP_ID`）。
-2. 下载 `google-services.json`，放到 `apps/mobile/android/app/`（不要提交到公开仓库），重新打包。工程已在检测到该文件时自动启用 Firebase。
+2. 下载 `google-services.json`，放到 `apps/mobile/android/app/`（不要提交到公开仓库），重新打包。工程已在检测到该文件时自动启用 Firebase。没有该文件时 App 照常使用，只是不注册推送（不会因推送崩溃）。
 3. Firebase 控制台 → 项目设置 → 服务账号 → **生成新的私钥**，得到服务账号 JSON。把它配置到服务器环境变量 `FCM_SERVICE_ACCOUNT`（JSON 内容）或 `FCM_SERVICE_ACCOUNT_FILE`（文件路径），重启 API。
 
 ### 6.2 iOS（APNs）

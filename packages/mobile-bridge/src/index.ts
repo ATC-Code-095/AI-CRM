@@ -114,10 +114,15 @@ interface CapacitorPushPlugin {
   addListener(event: string, cb: (e: never) => void): Promise<{ remove(): Promise<void> }>
 }
 
+/** Android 工程自带的原生插件（apps/mobile/android/.../CrmAppPlugin.java） */
+interface CrmAppPlugin {
+  pushReady(): Promise<{ ready: boolean }>
+}
+
 interface CapacitorGlobal {
   isNativePlatform?(): boolean
   getPlatform?(): string
-  Plugins?: { PushNotifications?: CapacitorPushPlugin }
+  Plugins?: { PushNotifications?: CapacitorPushPlugin; CrmApp?: CrmAppPlugin }
 }
 
 function capacitor(): CapacitorGlobal | undefined {
@@ -140,6 +145,14 @@ export async function registerNativePush(h: PushHandlers): Promise<boolean> {
   const cap = capacitor()!
   const push = cap.Plugins!.PushNotifications!
   const platform = cap.getPlatform!() as 'ios' | 'android'
+  // Android 未配置 Firebase（打包时没有 google-services.json）时注册推送会让 App 崩溃，直接跳过
+  if (platform === 'android') {
+    const ready = await cap.Plugins!.CrmApp?.pushReady().then((r) => r.ready).catch(() => false)
+    if (!ready) {
+      h.onError?.('android push not configured (google-services.json missing)')
+      return false
+    }
+  }
   let perm = await push.checkPermissions()
   if (perm.receive === 'prompt' || perm.receive === 'prompt-with-rationale') perm = await push.requestPermissions()
   if (perm.receive !== 'granted') return false

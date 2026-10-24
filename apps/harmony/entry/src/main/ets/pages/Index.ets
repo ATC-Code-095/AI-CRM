@@ -14,7 +14,8 @@ const LOCATION_PERMISSIONS: Permissions[] = ['ohos.permission.APPROXIMATELY_LOCA
 struct Index {
   @StorageLink(PUSH_KEY) @Watch('deliverPush') pendingPush: string = '';
   private controller: webview.WebviewController = new webview.WebviewController();
-  private ctx: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
+  // EntryAbility 在加载页面前把自己的 context 放进 AppStorage
+  private ctx: common.UIAbilityContext = AppStorage.get<common.UIAbilityContext>('abilityContext') as common.UIAbilityContext;
   private server: RawfileServer = new RawfileServer(this.ctx);
   private bridge: CrmHarmony = new CrmHarmony(this.ctx);
   private pageReady: boolean = false;
@@ -69,9 +70,13 @@ struct Index {
   }
 
   onBackPress(): boolean {
-    if (this.controller.accessBackward()) {
-      this.controller.backward();
-      return true;
+    try {
+      if (this.controller.accessBackward()) {
+        this.controller.backward();
+        return true;
+      }
+    } catch (e) {
+      hilog.warn(0x0000, 'CRM', 'backward failed: %{public}s', JSON.stringify(e));
     }
     return false;
   }

@@ -8,9 +8,9 @@
 
 | 平台 | 工程 | 状态 |
 |------|------|------|
-| Android | `apps/mobile/android`（Capacitor 6） | ✅ 已生成，包名 `com.itecent.crm`，定位、推送权限已配置；**尚未在 Android Studio 中编译验证** |
+| Android | `apps/mobile/android`（Capacitor 6） | ✅ 已编译调试包并在 Android 37 模拟器运行，可连接后端；Gradle 8.14（支持 JDK 21），包名 `com.itecent.crm`，定位、推送权限已配置。正式包需自己的签名证书 |
 | iOS | `apps/mobile/ios`（Capacitor 6，Swift Package Manager，无需 CocoaPods） | ✅ 已在 Xcode 27 编译，iPhone 模拟器（iOS 27）运行正常，可连接后端；最低系统 iOS 15，已采用 Scene 生命周期（iOS 27 强制要求）；推送、定位 / 相机 / 相册说明已配置。真机与推送需开发者账号签名后验证 |
-| 鸿蒙 NEXT | `apps/harmony`（ArkTS，API 12+） | ✅ 完整工程：ArkWeb 内置网页包，推送、定位、拨号、附件选择、通知跳转已实现；**尚未在 DevEco Studio 中编译验证** |
+| 鸿蒙 NEXT | `apps/harmony`（ArkTS，API 12+） | ✅ 完整工程，已用 DevEco Studio 的 hvigor（HarmonyOS 26 SDK）编译出 HAP，无告警；ArkWeb 内置网页包，推送、定位、拨号、附件选择、通知跳转已实现。安装到真机 / 模拟器需华为账号签名后验证 |
 
 已在代码中完成：接口地址可配置（`VITE_API_BASE`）、后端放行 App 来源的跨域请求、分享链接与二维码在 App 内使用服务器地址、App 包不含 Service Worker。以「网页与接口不同源」的方式模拟 App 运行，E2E 11 项全部通过，所有接口请求均发往配置的后端。
 
@@ -22,7 +22,7 @@
 |----|------|
 | **后端 HTTPS** | 正式发布必须用 HTTPS 地址（如 `https://crm.example.com`）。iOS 默认禁止 HTTP；Android 虽可放行，但明文传输登录令牌不安全。HTTP 只用于内网测试 |
 | Node / pnpm | 与网页开发相同，仓库根目录 `pnpm install` |
-| Android | [Android Studio](https://developer.android.com/studio)（自带 JDK 17 与 Android SDK） |
+| Android | [Android Studio](https://developer.android.com/studio)（含 Android SDK）。命令行编译用 JDK 21：`JAVA_HOME=$(/usr/libexec/java_home -v 21) ./gradlew assembleDebug` |
 | iOS | Xcode（App Store 安装）+ Apple 开发者账号。首次使用 Xcode 需执行一次 `sudo xcodebuild -runFirstLaunch`，用模拟器还要 `xcodebuild -downloadPlatform iOS` |
 | 鸿蒙 | [DevEco Studio](https://developer.huawei.com/consumer/cn/deveco-studio/)（含 HarmonyOS SDK，API 12+）+ 华为开发者账号 |
 
@@ -130,6 +130,15 @@ VITE_API_BASE=https://crm.example.com bash scripts/sync-mobile.sh
 2. DevEco Studio → **Open** → 选择 `apps/harmony` 目录，等待同步（会自动生成 `oh_modules`、`local.properties` 等，不进 git）。
 3. **签名**：File → Project Structure → **Signing Configs**，登录华为开发者账号后勾选 **Automatically generate signature**（调试用）；正式发布在 AppGallery Connect 申请发布证书与 Profile。签名信息写入 `build-profile.json5`，**含密码，不要提交到公开仓库**。
 4. 连接鸿蒙 NEXT 真机或模拟器，点 ▶ 运行。
+
+   命令行编译（不签名，用于检查代码）：
+   ```bash
+   D=/Applications/DevEco-Studio.app/Contents
+   cd apps/harmony
+   DEVECO_SDK_HOME=$D/sdk PATH=$D/tools/node/bin:$PATH node $D/tools/hvigor/bin/hvigorw.js \
+     --mode module -p module=entry@default -p product=default -p buildMode=debug assembleHap --no-daemon
+   ```
+   产物在 `entry/build/default/outputs/default/entry-default-unsigned.hap`。
 5. 正式包：Build → **Build Hap(s)/APP(s) → Build APP(s)**，生成 `.app` 上传 AppGallery Connect。
 
 说明：

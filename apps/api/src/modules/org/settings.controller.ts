@@ -30,8 +30,6 @@ const EDITABLE_KEYS = new Set([
   'amount_approval_threshold',
   'lead.assign_rule',
   'lead.assign_on_create',
-  'ai_enabled',
-  'ai_provider',
   'file.max_size_mb',
   'form.rate_limit_per_ip_min',
   'quote.no_prefix',
@@ -42,7 +40,6 @@ const EDITABLE_KEYS = new Set([
   'session.refresh_ttl_days',
   'commission.rate',
   'partner.commission.rate',
-  'feature.ai',
   'feature.webhooks',
   'feature.checkin',
   'feature.import',
@@ -72,7 +69,6 @@ export class SettingsController {
     })
     // 功能开关默认值
     const defaults = [
-      { key: 'feature.ai', value: true },
       { key: 'feature.webhooks', value: true },
       { key: 'feature.checkin', value: true },
       { key: 'feature.import', value: true },

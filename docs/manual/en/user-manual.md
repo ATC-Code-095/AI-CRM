@@ -221,7 +221,7 @@ Menu: **Sales Process → Deals** (shortcut `4`).
 | Tab | Content |
 |-----|---------|
 | Deal Overview | Next Best Actions, sales path checklist (tick items off), Deal Score, basic information, interaction timeline |
-| Battle Support | Buying committee, competitors, sales coaching, deal room, **AI assistant** (summary, next steps and risk; needs to be enabled by your administrator; the result shows whether it came from the AI model or the built-in rules) |
+| Battle Support | Buying committee, competitors, sales coaching, deal room |
 | Team & Documents | Deal team members, related quotes and contracts |
 
 **Share**: **Share** on the detail page adds collaborators to the deal.

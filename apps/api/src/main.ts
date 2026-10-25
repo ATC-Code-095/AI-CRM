@@ -36,7 +36,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter())
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('AI-CRM API')
+    .setTitle('ZhiXiao CRM API')
     .setDescription('销售过程驱动一体化 CRM')
     .setVersion('v1')
     .addBearerAuth()

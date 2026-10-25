@@ -283,7 +283,7 @@ export class ReportsService {
     })
   }
 
-  /** 销售周报（近 7 天摘要，供 AI/导出） */
+  /** 销售周报（近 7 天摘要，供导出） */
   async weeklyBrief(me: AuthUser) {
     const from = new Date(Date.now() - 7 * 86400000)
     const [leads, opps, won, payments, acts] = await Promise.all([

@@ -1,7 +1,7 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'crypto'
 
 /**
- * 存库的第三方密钥（如 AI 接口密钥）用 AES-256-GCM 加密。
+ * 存库的第三方密钥（如企业微信 / 钉钉 / 飞书应用密钥）用 AES-256-GCM 加密。
  * 加密密钥取环境变量 SETTINGS_SECRET；未设置时用 JWT_ACCESS_SECRET 派生（更换它后需重新填写已存密钥）。
  */
 function key(): Buffer {

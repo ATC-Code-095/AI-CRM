@@ -10,7 +10,6 @@ import { t } from '../../i18n'
 import { NotifyBotsCard } from './NotifyBotsCard'
 import { PushStatusCard } from './PushStatusCard'
 import { CurrencyCard } from './CurrencyCard'
-import { AiConfigCard } from './AiConfigCard'
 import { ImAppsCard } from './ImAppsCard'
 
 interface Setting {
@@ -536,7 +535,6 @@ export default function SettingsPage() {
         </Space>
         <div style={{ marginTop: 8, color: 'var(--crm-muted)', fontSize: 12 }}>{t('settings.runsDailyAt08')}</div>
       </Card>
-      <AiConfigCard className={show('api')} />
       <ImAppsCard className={show('api')} />
       <Card size="small" className={show('api')} title={t('settings.openApiDevelopers')}>
         <Space wrap style={{ marginBottom: 8 }}>

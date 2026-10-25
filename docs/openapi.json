@@ -7654,131 +7654,6 @@
         ]
       }
     },
-    "/api/v1/ai/summarize": {
-      "post": {
-        "operationId": "AiController_summarize",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SummarizeDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "ai"
-        ]
-      }
-    },
-    "/api/v1/ai/suggest-next": {
-      "post": {
-        "operationId": "AiController_suggest",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SuggestDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "ai"
-        ]
-      }
-    },
-    "/api/v1/ai/risk": {
-      "post": {
-        "operationId": "AiController_risk",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RiskDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "ai"
-        ]
-      }
-    },
-    "/api/v1/ai/config": {
-      "get": {
-        "operationId": "AiController_getConfig",
-        "summary": "AI 接口配置（不返回密钥）",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "ai"
-        ]
-      },
-      "put": {
-        "operationId": "AiController_saveConfig",
-        "summary": "保存 AI 接口配置：mock / openai（兼容接口）/ anthropic",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AiConfigDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "ai"
-        ]
-      }
-    },
-    "/api/v1/ai/config/test": {
-      "post": {
-        "operationId": "AiController_test",
-        "summary": "用当前配置发送一次测试请求",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "ai"
-        ]
-      }
-    },
     "/api/v1/jobs/payment-plan-overdue": {
       "post": {
         "operationId": "JobsController_overdue",
@@ -8873,7 +8748,7 @@
     }
   },
   "info": {
-    "title": "AI-CRM API",
+    "title": "ZhiXiao CRM API",
     "description": "销售过程驱动一体化 CRM",
     "version": "v1",
     "contact": {}
@@ -9142,22 +9017,6 @@
         "properties": {}
       },
       "UploadMetaDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "SummarizeDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "SuggestDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "RiskDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "AiConfigDto": {
         "type": "object",
         "properties": {}
       },

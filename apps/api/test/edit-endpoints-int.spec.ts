@@ -132,7 +132,7 @@ describe('settings whitelist', () => {
     const list = await request(BASE).get('/api/v1/settings').set(auth).expect(200)
     const keys = (list.body.data as { key: string }[]).map((x) => x.key)
     expect(keys).toContain('discount_approval_threshold')
-    expect(keys).toContain('feature.ai')
+    expect(keys).toContain('feature.webhooks')
     expect(keys).not.toContain('esign.provider')
     expect(keys.some((k) => k.startsWith('health.trend.') || k === 'nps.scores')).toBe(false)
   })

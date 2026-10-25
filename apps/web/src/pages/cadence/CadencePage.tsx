@@ -481,7 +481,7 @@ export default function CadencePage() {
       </Modal>
 
       <Card size="small" title={t('cadence.tips')} style={{ marginTop: 16 }} className="crm-panel-fixed crm-panel-sm">
-        <ul className="crm-ai-list">
+        <ul className="crm-tip-list">
           <li>{t('cadence.newLeadD0')}</li>
           <li>{t('cadence.afterQuoteD0')}</li>
           <li>{t('cadence.renewalStart60Days')}</li>

@@ -19,7 +19,6 @@ import dayjs from 'dayjs'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { api } from '../../api/client'
-import { useFeature } from '../../hooks/useFeature'
 import { DecisionChainChart } from '../../components/DecisionChainChart'
 import { ActivityTimeline } from '../../components/ActivityTimeline'
 import { NextBestActions } from '../../components/NextBestActions'
@@ -32,7 +31,6 @@ export default function OpportunityDetailPage() {
   const { id } = useParams()
   const { message } = App.useApp()
   const qc = useQueryClient()
-  const aiEnabled = useFeature('feature.ai')
   const [lostOpen, setLostOpen] = useState(false)
   const [lostReason, setLostReason] = useState('')
   const [oppTab, setOppTab] = useState('overview')
@@ -40,15 +38,7 @@ export default function OpportunityDetailPage() {
   const [shareUser, setShareUser] = useState('')
   const [memberUser, setMemberUser] = useState('')
   const [memberRole, setMemberRole] = useState('COLLABORATOR')
-  const [aiOpen, setAiOpen] = useState(false)
   const [pathStep, setPathStep] = useState(0)
-  const [aiResult, setAiResult] = useState<{
-    summary?: string
-    suggestions?: string[]
-    risk?: { level: string; reasons: string[] }
-    /** ai = 外部模型生成；mock = 内置规则（未配置 AI 或调用失败） */
-    source?: string
-  }>({})
 
   const { data } = useQuery({
     queryKey: ['opp-detail', id],
@@ -173,29 +163,6 @@ export default function OpportunityDetailPage() {
     onError: (e: Error) => message.error(e.message),
   })
 
-  const runAi = () => {
-    setAiOpen(true)
-    setAiResult({})
-    void Promise.all([
-      api<{ content: string; source?: string }>('/ai/summarize', {
-        method: 'POST',
-        body: JSON.stringify({ entityType: 'OPPORTUNITY', entityId: id }),
-      }),
-      api<{ suggestions: string[] }>('/ai/suggest-next', {
-        method: 'POST',
-        body: JSON.stringify({ opportunityId: id }),
-      }),
-      api<{ level: string; reasons: string[] }>('/ai/risk', {
-        method: 'POST',
-        body: JSON.stringify({ opportunityId: id }),
-      }),
-    ])
-      .then(([summary, sug, risk]) => {
-        setAiResult({ summary: summary.content, suggestions: sug.suggestions, risk, source: summary.source })
-      })
-      .catch((e: Error) => message.error(e.message))
-  }
-
   if (!data) return null
   const stages = stagesQ.data?.[0]?.stages ?? []
 
@@ -222,7 +189,6 @@ export default function OpportunityDetailPage() {
           </>
         )}
         <Button onClick={() => setShareOpen(true)}>{t('opp.share')}</Button>
-        {aiEnabled && <Button onClick={runAi}>{t('feature.ai')}</Button>}
         <Link to="/opportunities">{t('common.back')}</Link>
       </Space>
       {gateError && (
@@ -397,48 +363,6 @@ export default function OpportunityDetailPage() {
           options={(usersQ.data?.items ?? []).map((u) => ({ value: u.id, label: u.name }))}
           onChange={setShareUser}
         />
-      </Modal>
-      <Modal title={t('feature.ai')} open={aiOpen} onCancel={() => setAiOpen(false)} footer={null} width={520}>
-        {aiResult.source && (
-          <Tag color={aiResult.source === 'ai' ? 'blue' : 'default'} style={{ marginBottom: 8 }}>
-            {aiResult.source === 'ai' ? t('ai.source.ai') : t('ai.source.mock')}
-          </Tag>
-        )}
-        <p>
-          <b>{t('opp.summary')}</b>
-          {aiResult.summary ?? t('common.generating')}
-        </p>
-        <p>
-          <b>{t('opp.nextSteps')}</b>
-        </p>
-        <ul>
-          {(aiResult.suggestions ?? []).map((s) => (
-            <li key={s}>{s}</li>
-          ))}
-        </ul>
-        <p>
-          <b>{t('common.risk')}</b>
-          {aiResult.risk ? (
-            <Tag
-              color={
-                aiResult.risk.level === 'HIGH'
-                  ? 'red'
-                  : aiResult.risk.level === 'MEDIUM'
-                    ? 'orange'
-                    : 'green'
-              }
-            >
-              {aiResult.risk.level}
-            </Tag>
-          ) : (
-            '…'
-          )}
-        </p>
-        <ul>
-          {(aiResult.risk?.reasons ?? []).map((s) => (
-            <li key={s}>{s}</li>
-          ))}
-        </ul>
       </Modal>
     </div>
   )

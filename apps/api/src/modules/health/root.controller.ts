@@ -13,7 +13,7 @@ export class RootController {
       code: 0,
       message: 'ok',
       data: {
-        name: 'AI-CRM API',
+        name: 'ZhiXiao CRM API',
         version: 'v1',
         api: `${base}/api/v1`,
         health: `${base}/api/v1/health`,

@@ -19,7 +19,6 @@ import { ShareModule } from './modules/share/share.module'
 import { ImportModule } from './modules/import/import.module'
 import { FileModule } from './modules/file/file.module'
 import { SearchModule } from './modules/search/search.module'
-import { AiModule } from './modules/ai/ai.module'
 import { PlatformModule } from './modules/platform/platform.module'
 import { JobsModule } from './modules/jobs/jobs.module'
 import { PoolModule } from './modules/pool/pool.module'
@@ -52,7 +51,6 @@ import { ImModule } from './modules/im/im.module'
     ImportModule,
     FileModule,
     SearchModule,
-    AiModule,
     PlatformModule,
     JobsModule,
     PoolModule,

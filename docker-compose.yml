@@ -49,9 +49,6 @@ services:
       AUTO_SEED: ${AUTO_SEED:-false}
       SEED_PASSWORD: ${SEED_PASSWORD:-}
       FILE_STORAGE_DIR: /data/storage
-      AI_API_KEY: ${AI_API_KEY:-}
-      AI_BASE_URL: ${AI_BASE_URL:-}
-      AI_MODEL: ${AI_MODEL:-}
       SETTINGS_SECRET: ${SETTINGS_SECRET:-}
       APNS_KEY: ${APNS_KEY:-}
       APNS_KEY_ID: ${APNS_KEY_ID:-}

@@ -8,7 +8,6 @@ import {
   TeamOutlined,
   ThunderboltOutlined,
   UserAddOutlined,
-  RobotOutlined,
   PhoneOutlined,
 } from '@ant-design/icons'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -201,20 +200,6 @@ export function CommandPalette() {
           },
         })
       }
-    }
-
-    // 1.5 AI 助手
-    if (match(t('feature.ai')) || match('ai assistant copilot zhushou')) {
-      list.push({
-        key: 'ai:assistant',
-        group: t('cmp.commandPalette.ai'),
-        label: t('common.aiAssistantSummaryNext'),
-        icon: <RobotOutlined />,
-        run: () => {
-          setOpen(false)
-          window.dispatchEvent(new CustomEvent('crm:ai-open'))
-        },
-      })
     }
 
     // 2. 最近访问

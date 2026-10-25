@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query'
 import { api, isLoggedIn } from '../api/client'
 
 export type FeatureKey =
-  | 'feature.ai'
   | 'feature.webhooks'
   | 'feature.checkin'
   | 'feature.import'

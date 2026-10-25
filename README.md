@@ -198,7 +198,7 @@ pnpm -C apps/web exec vite build          # 输出 apps/web/dist
 
 ```ini
 [Unit]
-Description=AI CRM API
+Description=ZhiXiao CRM API
 After=network.target postgresql.service
 
 [Service]
@@ -285,8 +285,7 @@ API 只从环境变量读取配置（源码部署写在 `apps/api/.env`，Docker
 | `SEED_PASSWORD` | 否 | — | 指定初始账号的密码（不打印）；不设置时生产环境随机生成 |
 | `LOGIN_RATE_LIMIT` | 否 | `20` | 每个 IP 每分钟登录次数上限 |
 | `FILE_STORAGE_DIR` | 否 | `./storage` | 附件存放目录，需持久化并纳入备份 |
-| `SETTINGS_SECRET` | 建议 | 由 `JWT_ACCESS_SECRET` 派生 | 加密存库的第三方密钥（AI 接口密钥等）；设置后不要更换，否则需在系统设置里重新填写 |
-| `AI_API_KEY` / `AI_BASE_URL` / `AI_MODEL` | 否 | — | 旧方式配置 AI 接口；推荐在 系统设置 → 开放平台 → AI 助手接口 中配置（支持 Claude 与 OpenAI 兼容接口） |
+| `SETTINGS_SECRET` | 建议 | 由 `JWT_ACCESS_SECRET` 派生 | 加密存库的第三方密钥（企业微信 / 钉钉 / 飞书应用密钥等）；设置后不要更换，否则需在系统设置里重新填写 |
 | `APNS_KEY` 或 `APNS_KEY_FILE`、`APNS_KEY_ID`、`APNS_TEAM_ID`、`APNS_BUNDLE_ID`、`APNS_PRODUCTION` | 否 | — | iOS 推送：Apple 开发者后台创建的 .p8 推送密钥（内容可用 `\n` 写成一行）、Key ID、Team ID、App 的 Bundle ID（默认 `com.itecent.crm`）；`APNS_PRODUCTION=true` 用正式环境 |
 | `FCM_SERVICE_ACCOUNT` 或 `FCM_SERVICE_ACCOUNT_FILE` | 否 | — | Android 推送：Firebase 项目的服务账号 JSON（内容或文件路径） |
 | `HMS_SERVICE_ACCOUNT` 或 `HMS_SERVICE_ACCOUNT_FILE` | 否 | — | 鸿蒙推送：华为 AppGallery Connect 服务账号密钥 JSON（内容或文件路径） |
@@ -397,7 +396,7 @@ M08 客户服务       工单、知识库、SLA、NPS
 M09 营销与获客     营销活动、表单、邮件跟踪
 M10 报表与驾驶舱   报表中心、漏斗、目标、佣金、集团财务
 M11 流程与审批     审批流、业务规则
-M12 平台与AI       开放 API、Webhook、智能助手
+M12 平台         开放 API、Webhook、通讯录同步与扫码登录
 ```
 
 ---

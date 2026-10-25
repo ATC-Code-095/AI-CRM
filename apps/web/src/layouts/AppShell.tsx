@@ -13,7 +13,6 @@ import {
   PhoneOutlined,
   TeamOutlined,
   RiseOutlined,
-  RobotOutlined,
   QuestionCircleOutlined,
   SearchOutlined,
 } from '@ant-design/icons'
@@ -28,7 +27,6 @@ import { ACCENT_PRESETS, useUiMode } from '../hooks/useUiTheme'
 import { NotificationBell } from '../components/NotificationBell'
 import { GlobalSearch } from '../components/GlobalSearch'
 import { CommandPalette, CommandTrigger, pushRecent, readRecent } from '../components/CommandPalette'
-import { AiAssistant } from '../components/AiAssistant'
 import { ShortcutHelp } from '../components/ShortcutHelp'
 import { QuickCreateButton } from '../components/QuickCreateButton'
 import { NAV_GROUPS, NAV_LABELS, menuKeyFor, navLabelFor } from '../navigation'
@@ -72,7 +70,6 @@ export default function AppShell() {
     }
   })
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [aiOpen, setAiOpen] = useState(false)
   const [menuQuery, setMenuQuery] = useState('')
   const [helpOpen, setHelpOpen] = useState(false)
   const setCollapsed = (v: boolean) => {
@@ -196,13 +193,6 @@ export default function AppShell() {
       if (gTimer) clearTimeout(gTimer)
     }
   }, [safeNav])
-
-  // ⌘K →「AI 助手」打开抽屉
-  useEffect(() => {
-    const onOpen = () => setAiOpen(true)
-    window.addEventListener('crm:ai-open', onOpen)
-    return () => window.removeEventListener('crm:ai-open', onOpen)
-  }, [])
 
   // 记录最近访问，供 ⌘K 命令面板「最近访问」使用
   useEffect(() => {
@@ -568,7 +558,7 @@ export default function AppShell() {
             {!collapsed && (
               <div className="crm-brand-text">
                 <div className="crm-brand-name">{t('app.shortName')}</div>
-                <div className="crm-brand-sub">AI Sales Platform</div>
+                <div className="crm-brand-sub">Sales Platform</div>
               </div>
             )}
             {!collapsed && (
@@ -709,11 +699,6 @@ export default function AppShell() {
           </div>
           <div className="crm-header-center">{!isMobile && <CommandTrigger />}</div>
           <div className="crm-header-right">
-            {!isMobile && (
-              <Tooltip title={t('common.aiAssistantSummaryNext')}>
-                <Button type="text" icon={<RobotOutlined />} onClick={() => setAiOpen(true)} />
-              </Tooltip>
-            )}
             <QuickCreateButton />
             <NotificationBell />
             <Dropdown
@@ -818,7 +803,6 @@ export default function AppShell() {
         )}
       </Layout>
       <CommandPalette />
-      <AiAssistant open={aiOpen} onClose={() => setAiOpen(false)} />
       <ShortcutHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
       {isMobile && (
         <Drawer
@@ -832,7 +816,7 @@ export default function AppShell() {
             <div className="crm-logo">Z</div>
             <div className="crm-brand-text">
               <div className="crm-brand-name">{t('app.shortName')}</div>
-              <div className="crm-brand-sub">AI Sales Platform</div>
+              <div className="crm-brand-sub">Sales Platform</div>
             </div>
           </div>
           <Menu

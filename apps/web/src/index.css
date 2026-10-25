@@ -850,42 +850,13 @@ body {
 }
 
 /* ==========================================================================
-   12.3 AI 助手抽屉
+   12.3 提示列表
    ========================================================================== */
-.crm-ai-section {
-  padding: 10px 12px;
-  border: 1px solid var(--crm-border);
-  border-radius: var(--crm-radius-sm);
-  background: var(--crm-bg-soft);
-  margin-bottom: 12px;
-}
 
-.crm-ai-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 12px;
-}
 
-.crm-ai-card {
-  border: 1px solid var(--crm-border);
-  border-left: 3px solid var(--crm-accent);
-  border-radius: var(--crm-radius-sm);
-  background: var(--crm-card);
-  padding: 12px;
-  margin-bottom: 12px;
-  box-shadow: var(--crm-shadow);
-}
 
-.crm-ai-card-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  font-size: 13px;
-}
 
-.crm-ai-list {
+.crm-tip-list {
   margin: 0;
   padding-left: 18px;
   font-size: 12.5px;
@@ -893,15 +864,6 @@ body {
   line-height: 1.8;
 }
 
-.crm-ai-script {
-  margin-top: 6px;
-  padding: 8px 10px;
-  border-radius: var(--crm-radius-xs);
-  background: var(--crm-brand-50);
-  color: var(--crm-brand-700);
-  font-size: 12.5px;
-  line-height: 1.7;
-}
 
 /* 我的关注 胶囊 */
 .crm-star-chip {

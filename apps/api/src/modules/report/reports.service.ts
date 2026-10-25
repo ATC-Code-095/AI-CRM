@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import type { CommissionPayout } from '@prisma/client'
-import { addMoney, BizException, ErrorCodes } from '@ai-crm/shared'
+import { addMoney, BizException, ErrorCodes } from '@zhixiao-crm/shared'
 import { AuthUser } from '../../common/decorators'
 import { PrismaService } from '../../common/prisma/prisma.service'
 import { PushService } from '../notify/push.service'
@@ -461,7 +461,7 @@ export class ReportsService {
     }
   }
 
-  /** 智能提醒：逾期跟进、合同到期、工单 SLA */
+  /** 提醒中心：逾期跟进、合同到期、工单 SLA */
   async smartReminders(me: AuthUser) {
     const now = new Date()
     const soon = new Date(now.getTime() + 7 * 86400000)
@@ -657,7 +657,7 @@ export class ReportsService {
           entityId: a.id,
           ownerId: a.ownerId,
           dueAt: due,
-          source: 'AI',
+          source: 'AUTO',
           createdById: me.id,
           updatedById: me.id,
         },
@@ -900,7 +900,7 @@ export class ReportsService {
           entityId: account.id,
           ownerId: account.ownerId,
           dueAt: due,
-          source: 'AI',
+          source: 'AUTO',
           createdById: me.id,
           updatedById: me.id,
         },

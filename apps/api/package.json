@@ -1,5 +1,5 @@
 {
-  "name": "@ai-crm/api",
+  "name": "@zhixiao-crm/api",
   "version": "0.2.0",
   "license": "Apache-2.0",
   "author": "Suzhou Atecent Information Technology Co., Ltd.",
@@ -13,7 +13,7 @@
     "prisma": "prisma"
   },
   "dependencies": {
-    "@ai-crm/shared": "workspace:*",
+    "@zhixiao-crm/shared": "workspace:*",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.2.0",

@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { IsInt, IsOptional, IsString, Max, Min, MinLength } from 'class-validator'
-import { PERMISSIONS } from '@ai-crm/shared'
+import { PERMISSIONS } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { OpportunitiesService } from './opportunities.service'
 

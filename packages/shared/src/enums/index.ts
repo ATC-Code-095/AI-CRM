@@ -128,7 +128,7 @@ export enum ActivityStatus {
 
 export enum ActivitySource {
   MANUAL = 'MANUAL',
-  AI = 'AI',
+  AUTO = 'AUTO',
   API = 'API',
   /** 跟进计划（Cadence）自动生成 */
   CADENCE = 'CADENCE',

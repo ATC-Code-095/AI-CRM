@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
-import { BizException, ErrorCodes, PageResult, StdStageCode } from '@ai-crm/shared'
+import { BizException, ErrorCodes, PageResult, StdStageCode } from '@zhixiao-crm/shared'
 import { AuthUser } from '../../common/decorators'
 import { canReadRowWithShare, scopeWhere } from '../../common/data-scope'
 import { assertVersion } from '../../common/optimistic'

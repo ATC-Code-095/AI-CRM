@@ -2,7 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { IsIn, IsOptional, IsString, MaxLength, MinLength } from 'class-validator'
 import { hashPassword, verifyPassword } from '../../common/password'
-import { ErrorCodes, BizException, SUPPORTED_LOCALES } from '@ai-crm/shared'
+import { ErrorCodes, BizException, SUPPORTED_LOCALES } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser } from '../../common/decorators'
 import { PrismaService } from '../../common/prisma/prisma.service'
 

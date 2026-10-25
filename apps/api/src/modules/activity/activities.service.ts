@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { ActivitySource, BizException, ErrorCodes, PageResult } from '@ai-crm/shared'
+import { ActivitySource, BizException, ErrorCodes, PageResult } from '@zhixiao-crm/shared'
 import { AuthUser } from '../../common/decorators'
 import { PrismaService } from '../../common/prisma/prisma.service'
 import { tr } from '../../common/locale'

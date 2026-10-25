@@ -6,7 +6,7 @@ import {
   PageResult,
   addMoney,
   parseMoney,
-} from '@ai-crm/shared'
+} from '@zhixiao-crm/shared'
 import { AuthUser } from '../../common/decorators'
 import { nextDocNo } from '../../common/doc-no'
 import { assertVersion } from '../../common/optimistic'

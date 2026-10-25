@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Post } from '@nestjs/common'
 import { IsIn, IsOptional, IsString, MaxLength, MinLength } from 'class-validator'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { PERMISSIONS } from '@ai-crm/shared'
+import { PERMISSIONS } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { DevicePushService } from './device-push.service'
 

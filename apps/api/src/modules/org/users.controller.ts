@@ -15,7 +15,7 @@ import {
   MinLength,
 } from 'class-validator'
 import { hashPassword } from '../../common/password'
-import { PERMISSIONS } from '@ai-crm/shared'
+import { PERMISSIONS } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { UsersService } from './users.service'
 

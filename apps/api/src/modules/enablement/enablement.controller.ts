@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client'
 import type { EmailTemplate, KnowledgeArticle } from '@prisma/client'
 import { randomUUID } from 'crypto'
 import { IsInt, IsOptional, IsString, Max, Min, MinLength } from 'class-validator'
-import { PERMISSIONS, ErrorCodes, BizException } from '@ai-crm/shared'
+import { PERMISSIONS, ErrorCodes, BizException } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { PrismaService } from '../../common/prisma/prisma.service'
 import { PushService } from '../notify/push.service'
@@ -643,7 +643,7 @@ export class EnablementController {
         entityId: account.id,
         ownerId: account.ownerId ?? me.id,
         dueAt: due,
-        source: 'AI',
+        source: 'AUTO',
         createdById: me.id,
         updatedById: me.id,
       },
@@ -1262,7 +1262,7 @@ export class EnablementController {
           entityId: a.id,
           ownerId: a.ownerId,
           dueAt: due,
-          source: 'AI',
+          source: 'AUTO',
           createdById: me.id,
           updatedById: me.id,
         },

@@ -17,10 +17,10 @@ jobs:
         env:
           POSTGRES_USER: crm
           POSTGRES_PASSWORD: crm
-          POSTGRES_DB: ai_crm
+          POSTGRES_DB: zhixiao_crm
         ports: ['5432:5432']
         options: >-
-          --health-cmd "pg_isready -U crm -d ai_crm"
+          --health-cmd "pg_isready -U crm -d zhixiao_crm"
           --health-interval 5s --health-timeout 5s --health-retries 10
       redis:
         image: redis:7-alpine
@@ -30,7 +30,7 @@ jobs:
           --health-interval 5s --health-timeout 3s --health-retries 10
 
     env:
-      DATABASE_URL: postgresql://crm:crm@localhost:5432/ai_crm
+      DATABASE_URL: postgresql://crm:crm@localhost:5432/zhixiao_crm
       REDIS_URL: redis://localhost:6379
       JWT_ACCESS_SECRET: ci-access-secret-0123456789abcdef0123456789
       JWT_REFRESH_SECRET: ci-refresh-secret-0123456789abcdef012345678

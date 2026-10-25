@@ -7,7 +7,7 @@ import {
   Logger,
 } from '@nestjs/common'
 import { Response } from 'express'
-import { BizException, ErrorCodes, ApiErrorItem } from '@ai-crm/shared'
+import { BizException, ErrorCodes, ApiErrorItem } from '@zhixiao-crm/shared'
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {

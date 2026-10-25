@@ -7,8 +7,8 @@ STAMP=$(date +%Y%m%d_%H%M%S)
 mkdir -p "$OUT_DIR"
 
 # 使用 DATABASE_URL 或默认本地
-URL="${DATABASE_URL:-postgresql://postgres:postgres@localhost:5432/ai_crm}"
-FILE="$OUT_DIR/ai_crm_$STAMP.dump"
+URL="${DATABASE_URL:-postgresql://postgres:postgres@localhost:5432/zhixiao_crm}"
+FILE="$OUT_DIR/zhixiao_crm_$STAMP.dump"
 
 if command -v pg_dump >/dev/null 2>&1; then
   pg_dump --format=custom "$URL" -f "$FILE"
@@ -16,7 +16,7 @@ if command -v pg_dump >/dev/null 2>&1; then
 else
   # 回退：本机没有 pg_dump 时，用 docker-compose.yml 中的 postgres 服务导出
   if command -v docker >/dev/null 2>&1; then
-    docker compose exec -T postgres pg_dump -U crm -Fc ai_crm > "$FILE"
+    docker compose exec -T postgres pg_dump -U crm -Fc zhixiao_crm > "$FILE"
     echo "backup via docker $FILE"
   else
     echo "pg_dump/docker not available" >&2
@@ -25,5 +25,5 @@ else
 fi
 
 # 清理过期
-find "$OUT_DIR" -name 'ai_crm_*.dump' -mtime "+$RETENTION_DAYS" -delete 2>/dev/null || true
+find "$OUT_DIR" -name 'zhixiao_crm_*.dump' -mtime "+$RETENTION_DAYS" -delete 2>/dev/null || true
 echo "retention ${RETENTION_DAYS}d"

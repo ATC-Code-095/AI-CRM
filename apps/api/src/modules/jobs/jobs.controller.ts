@@ -1,6 +1,6 @@
 import { Controller, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { PERMISSIONS } from '@ai-crm/shared'
+import { PERMISSIONS } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { JobsService } from './jobs.service'
 

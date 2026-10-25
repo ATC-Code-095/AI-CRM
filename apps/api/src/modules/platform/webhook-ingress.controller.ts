@@ -2,7 +2,7 @@ import { Body, Controller, HttpCode, Param, Post, Req } from '@nestjs/common'
 import { IsOptional, IsString } from 'class-validator'
 import { Public } from '../../common/decorators'
 import { verifyWebhookSignature } from '../../common/webhook-sign'
-import { BizException, ErrorCodes } from '@ai-crm/shared'
+import { BizException, ErrorCodes } from '@zhixiao-crm/shared'
 
 class IngressDto {
   @IsOptional()
@@ -29,7 +29,7 @@ export class WebhookIngressController {
     @Body() dto: IngressDto,
   ) {
     const raw = req.rawBody ?? JSON.stringify(req.body ?? {})
-    const sig = req.headers['x-ai-crm-signature']
+    const sig = req.headers['x-zhixiao-crm-signature']
     if (sig) {
       const ok = verifyWebhookSignature(secret, raw, sig)
       if (!ok) {

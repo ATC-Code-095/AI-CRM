@@ -5,7 +5,7 @@ import {
   PageResult,
   TicketSeverity,
   TicketStatus,
-} from '@ai-crm/shared'
+} from '@zhixiao-crm/shared'
 import { AuthUser } from '../../common/decorators'
 import { nextDocNo } from '../../common/doc-no'
 import { PrismaService } from '../../common/prisma/prisma.service'

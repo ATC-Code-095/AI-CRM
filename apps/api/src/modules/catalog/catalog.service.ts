@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { randomBytes } from 'crypto'
 import { Prisma } from '@prisma/client'
-import { BizException, ErrorCodes, PageResult, QuoteStatus, addMoney, mulMoney, parseMoney } from '@ai-crm/shared'
+import { BizException, ErrorCodes, PageResult, QuoteStatus, addMoney, mulMoney, parseMoney } from '@zhixiao-crm/shared'
 import { AuthUser } from '../../common/decorators'
 import { nextDocNo } from '../../common/doc-no'
 import { assertVersion } from '../../common/optimistic'

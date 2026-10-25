@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { IsOptional, IsString, MinLength } from 'class-validator'
-import { PERMISSIONS } from '@ai-crm/shared'
+import { PERMISSIONS } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { AccountsService } from './accounts.service'
 

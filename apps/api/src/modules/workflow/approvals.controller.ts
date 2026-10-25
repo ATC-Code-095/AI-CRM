@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { IsOptional, IsString } from 'class-validator'
-import { PERMISSIONS, QuoteStatus } from '@ai-crm/shared'
+import { PERMISSIONS, QuoteStatus } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { PushService } from '../notify/push.service'
 import { ApprovalsService } from './approvals.service'

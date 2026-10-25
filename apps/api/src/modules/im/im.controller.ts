@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, ParseEnumPipe, Post, Put, Query } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { IsBoolean, IsOptional, IsString, MaxLength } from 'class-validator'
-import { BizException, ErrorCodes, PERMISSIONS } from '@ai-crm/shared'
+import { BizException, ErrorCodes, PERMISSIONS } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions, Public } from '../../common/decorators'
 import { ImService } from './im.service'
 import { ImProvider } from './providers'

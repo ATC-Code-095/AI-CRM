@@ -1,9 +1,9 @@
-# AI-CRM 常用命令
+# ZhiXiao-CRM 常用命令
 .PHONY: install dev api web test smoke perf e2e seed backup restore openapi typecheck lint build
 
 install:
 	pnpm install
-	pnpm --filter @ai-crm/shared build
+	pnpm --filter @zhixiao-crm/shared build
 
 api:
 	cd apps/api && AUTO_SEED=false node dist/main.js
@@ -22,7 +22,7 @@ lint:
 	pnpm exec eslint apps/api apps/web --max-warnings 0
 
 build:
-	pnpm --filter @ai-crm/shared build
+	pnpm --filter @zhixiao-crm/shared build
 	cd apps/api && pnpm exec tsc -p tsconfig.json -outDir dist
 	cd apps/web && pnpm exec vite build
 

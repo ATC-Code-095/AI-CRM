@@ -1,4 +1,4 @@
-import { BizException, ErrorCodes } from '@ai-crm/shared'
+import { BizException, ErrorCodes } from '@zhixiao-crm/shared'
 
 /** 乐观锁：更新时携带 version，不匹配则 40900 */
 export function assertVersion(expected: number | undefined, current: number) {

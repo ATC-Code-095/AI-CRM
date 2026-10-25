@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from 'crypto'
 
-/** 校验 X-AI-CRM-Signature: t=<unix>,v1=<hex> */
+/** 校验 X-ZhiXiao-Signature: t=<unix>,v1=<hex> */
 export function verifyWebhookSignature(
   secret: string,
   rawBody: string,

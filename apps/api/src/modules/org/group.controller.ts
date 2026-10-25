@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { Prisma } from '@prisma/client'
-import { BizException, ErrorCodes, PERMISSIONS } from '@ai-crm/shared'
+import { BizException, ErrorCodes, PERMISSIONS } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { nextDocNo } from '../../common/doc-no'
 import { recordEmailSend } from '../enablement/success.mapper'

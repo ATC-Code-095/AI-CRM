@@ -25,7 +25,7 @@ import {
   LeadSource,
   LeadStatus,
   PERMISSIONS,
-} from '@ai-crm/shared'
+} from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { LeadsService } from './leads.service'
 import { tr } from '../../common/locale'

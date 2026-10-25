@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { BizException, ErrorCodes, ShareRole } from '@ai-crm/shared'
+import { BizException, ErrorCodes, ShareRole } from '@zhixiao-crm/shared'
 import { AuthUser } from '../../common/decorators'
 import { PrismaService } from '../../common/prisma/prisma.service'
 

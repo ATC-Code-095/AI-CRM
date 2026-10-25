@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { IsIn, IsString } from 'class-validator'
-import { PERMISSIONS, ShareRole } from '@ai-crm/shared'
+import { PERMISSIONS, ShareRole } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { SharesService } from './shares.service'
 

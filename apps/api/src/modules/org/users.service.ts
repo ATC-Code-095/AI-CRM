@@ -2,7 +2,7 @@ import {
   BadRequestException,
   Injectable,
 } from '@nestjs/common'
-import { ErrorCodes, BizException, PageResult, SUPPORTED_LOCALES } from '@ai-crm/shared'
+import { ErrorCodes, BizException, PageResult, SUPPORTED_LOCALES } from '@zhixiao-crm/shared'
 import { AuthUser } from '../../common/decorators'
 import { PrismaService } from '../../common/prisma/prisma.service'
 import { settingText, tenantSetting } from '../../common/tenant-setting'

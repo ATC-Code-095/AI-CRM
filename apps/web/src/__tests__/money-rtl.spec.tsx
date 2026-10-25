@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { formatMoney } from '@ai-crm/shared'
+import { formatMoney } from '@zhixiao-crm/shared'
 
 function Money({ value, locale }: { value: string; locale: string }) {
   return React.createElement('span', null, formatMoney(value, locale, 'CNY'))

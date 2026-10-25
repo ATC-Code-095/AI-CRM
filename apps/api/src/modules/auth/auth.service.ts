@@ -4,7 +4,7 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { verifyPassword } from '../../common/password'
-import { ErrorCodes, BizException } from '@ai-crm/shared'
+import { ErrorCodes, BizException } from '@zhixiao-crm/shared'
 import { PrismaService } from '../../common/prisma/prisma.service'
 
 export interface JwtAccessPayload {

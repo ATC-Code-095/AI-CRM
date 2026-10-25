@@ -8,10 +8,10 @@ import {
   Post,
 } from '@nestjs/common'
 import { IsOptional, IsString, MinLength } from 'class-validator'
-import { PERMISSIONS } from '@ai-crm/shared'
+import { PERMISSIONS } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { PrismaService } from '../../common/prisma/prisma.service'
-import { BizException, ErrorCodes } from '@ai-crm/shared'
+import { BizException, ErrorCodes } from '@zhixiao-crm/shared'
 
 class CreateDeptDto {
   @IsString()

@@ -1,4 +1,6 @@
-# 智销 CRM
+# 智销 CRM（ZhiXiao CRM）
+
+中文名：**智销 CRM** · English name: **ZhiXiao CRM**
 
 面向 B2B 销售团队的客户关系管理系统：线索 → 客户 → 商机 → 报价 → 合同 → 回款全流程，含审批、报表、客户服务、营销获客与集团多主体管理，支持桌面浏览器、手机 Web（PWA）与 iOS / Android / 鸿蒙客户端。
 
@@ -54,8 +56,8 @@
 **1. 获取代码**
 
 ```bash
-git clone <本仓库地址> ai-crm
-cd ai-crm
+git clone <本仓库地址> zhixiao-crm
+cd zhixiao-crm
 ```
 
 **2. 填写配置**
@@ -127,7 +129,7 @@ docker compose --env-file .env.docker down               # 停止（数据保留
 **升级到新版本**
 
 ```bash
-docker compose --env-file .env.docker exec -T postgres pg_dump -U crm -Fc ai_crm > backup-$(date +%F).dump   # 先备份
+docker compose --env-file .env.docker exec -T postgres pg_dump -U crm -Fc zhixiao_crm > backup-$(date +%F).dump   # 先备份
 git pull
 export GIT_COMMIT=$(git rev-parse --short HEAD)
 docker compose --env-file .env.docker up -d --build      # 新迁移在 API 启动时自动执行
@@ -152,16 +154,16 @@ sudo apt install -y nginx postgresql
 ```bash
 sudo -u postgres psql <<'SQL'
 CREATE USER crm WITH PASSWORD '<数据库密码>';
-CREATE DATABASE ai_crm OWNER crm;
+CREATE DATABASE zhixiao_crm OWNER crm;
 SQL
 ```
 
 **3. 获取代码并配置**
 
 ```bash
-sudo mkdir -p /opt/ai-crm && sudo chown $USER /opt/ai-crm
-git clone <本仓库地址> /opt/ai-crm
-cd /opt/ai-crm
+sudo mkdir -p /opt/zhixiao-crm && sudo chown $USER /opt/zhixiao-crm
+git clone <本仓库地址> /opt/zhixiao-crm
+cd /opt/zhixiao-crm
 pnpm install --frozen-lockfile
 cp .env.example apps/api/.env
 ```
@@ -170,31 +172,31 @@ cp .env.example apps/api/.env
 
 ```ini
 NODE_ENV=production
-DATABASE_URL=postgresql://crm:<数据库密码>@127.0.0.1:5432/ai_crm
+DATABASE_URL=postgresql://crm:<数据库密码>@127.0.0.1:5432/zhixiao_crm
 REDIS_URL=                                # 不用 Redis 可留空
 JWT_ACCESS_SECRET=<openssl rand -hex 32 的结果>
 JWT_REFRESH_SECRET=<另一个随机串>
 CORS_ORIGIN=https://crm.example.com       # 对外访问地址
 AUTO_SEED=false
-FILE_STORAGE_DIR=/opt/ai-crm/storage
+FILE_STORAGE_DIR=/opt/zhixiao-crm/storage
 ```
 
 **4. 迁移数据库、构建、写入初始数据**
 
 ```bash
-cd /opt/ai-crm/apps/api
+cd /opt/zhixiao-crm/apps/api
 pnpm exec prisma migrate deploy           # 创建全部表（空库约 10 秒）
 pnpm exec prisma generate
 pnpm build                                # 输出 apps/api/dist
 node scripts/seed-cli.mjs                 # 写入角色、权限与初始账号，输出中的「初始密码」只显示这一次（可重复执行，不会重置已改的密码）
 
-cd /opt/ai-crm
+cd /opt/zhixiao-crm
 pnpm -C apps/web exec vite build          # 输出 apps/web/dist
 ```
 
 **5. 用 systemd 运行 API**
 
-创建 `/etc/systemd/system/ai-crm-api.service`：
+创建 `/etc/systemd/system/zhixiao-crm-api.service`：
 
 ```ini
 [Unit]
@@ -202,7 +204,7 @@ Description=ZhiXiao CRM API
 After=network.target postgresql.service
 
 [Service]
-WorkingDirectory=/opt/ai-crm/apps/api
+WorkingDirectory=/opt/zhixiao-crm/apps/api
 ExecStart=/usr/bin/node dist/main.js
 Restart=always
 User=www-data
@@ -213,9 +215,9 @@ WantedBy=multi-user.target
 ```
 
 ```bash
-sudo mkdir -p /opt/ai-crm/storage && sudo chown www-data /opt/ai-crm/storage
+sudo mkdir -p /opt/zhixiao-crm/storage && sudo chown www-data /opt/zhixiao-crm/storage
 sudo systemctl daemon-reload
-sudo systemctl enable --now ai-crm-api
+sudo systemctl enable --now zhixiao-crm-api
 curl -s http://127.0.0.1:3001/api/v1/health    # "status":"ok"
 ```
 
@@ -223,13 +225,13 @@ curl -s http://127.0.0.1:3001/api/v1/health    # "status":"ok"
 
 **6. 配置 nginx**
 
-创建 `/etc/nginx/sites-available/ai-crm`，然后 `sudo ln -s /etc/nginx/sites-available/ai-crm /etc/nginx/sites-enabled/ && sudo nginx -t && sudo systemctl reload nginx`：
+创建 `/etc/nginx/sites-available/zhixiao-crm`，然后 `sudo ln -s /etc/nginx/sites-available/zhixiao-crm /etc/nginx/sites-enabled/ && sudo nginx -t && sudo systemctl reload nginx`：
 
 ```nginx
 server {
   listen 80;
   server_name crm.example.com;
-  root /opt/ai-crm/apps/web/dist;
+  root /opt/zhixiao-crm/apps/web/dist;
   index index.html;
   client_max_body_size 100m;                # 附件上传上限（系统设置 file.max_size_mb 最大 100）
 
@@ -255,13 +257,13 @@ HTTPS 可用 [Certbot](https://certbot.eff.org/)：`sudo certbot --nginx -d crm.
 **升级到新版本**
 
 ```bash
-cd /opt/ai-crm
+cd /opt/zhixiao-crm
 bash scripts/backup-db.sh                 # 先备份（需设置 DATABASE_URL，见下文）
 git pull
 pnpm install --frozen-lockfile
 cd apps/api && pnpm exec prisma migrate deploy && pnpm exec prisma generate && pnpm build && cd ../..
 pnpm -C apps/web exec vite build
-sudo systemctl restart ai-crm-api
+sudo systemctl restart zhixiao-crm-api
 curl -s http://127.0.0.1:3001/api/v1/health   # version / commit 应为新版本
 ```
 
@@ -308,10 +310,10 @@ API 只从环境变量读取配置（源码部署写在 `apps/api/.env`，Docker
 
 ```bash
 # 备份（保留 7 天）；本机无 pg_dump 时自动改用 docker compose 中的 postgres 容器
-DATABASE_URL='postgresql://crm:<密码>@127.0.0.1:5432/ai_crm' OUT_DIR=/var/backups/ai-crm bash scripts/backup-db.sh
+DATABASE_URL='postgresql://crm:<密码>@127.0.0.1:5432/zhixiao_crm' OUT_DIR=/var/backups/zhixiao-crm bash scripts/backup-db.sh
 
-# 恢复演练：恢复到临时库 ai_crm_restore_test，不影响正式库
-DATABASE_URL='<同上>' bash scripts/restore-db.sh /var/backups/ai-crm/ai_crm_<时间>.dump
+# 恢复演练：恢复到临时库 zhixiao_crm_restore_test，不影响正式库
+DATABASE_URL='<同上>' bash scripts/restore-db.sh /var/backups/zhixiao-crm/zhixiao_crm_<时间>.dump
 ```
 
 正式恢复：先停 API，对当前库再备份一次，执行 `pg_restore --clean --if-exists -d "$DATABASE_URL" <备份文件>`，再启动 API。附件目录（`FILE_STORAGE_DIR` 或 Docker 卷 `storage`）需单独复制备份。
@@ -401,15 +403,16 @@ M12 平台         开放 API、Webhook、通讯录同步与扫码登录
 
 ---
 
-## 开发约定（摘要）
+## 参与贡献
 
-- 功能范围、数据库（PostgreSQL）与语言（TypeScript）保持不变
-- 不更换技术栈、目录结构、命名风格
-- 用户可见文案必须走 i18n 词典（`apps/web/src/locales/`，中英文键必须一致）
-- 新页面必须同时支持手机布局（宽度 < 768 底部 Tab）
-- 不发明文档未定义的实体 / 字段 / 接口；不跳过权限校验
-- 不用假数据掩盖未完成接口；未写验收测试不标记完成
-- 密码、密钥只经环境变量传入，不写进代码、脚本与文档
+欢迎提交 Issue 与 Pull Request。提交代码前请确认：
+
+- 使用 TypeScript，数据库为 PostgreSQL，沿用现有目录结构与命名风格
+- 界面文字放在中英文词典中（`apps/web/src/locales/`，两种语言的键保持一致）
+- 新页面同时适配手机布局（宽度 < 768 时使用底部导航）
+- 新接口要做权限校验，并补充对应的测试
+- 密码、密钥只通过环境变量传入，不要写进代码、脚本或文档
+- 提交前运行 `pnpm typecheck`、`pnpm lint` 与 `pnpm test`
 
 ---
 

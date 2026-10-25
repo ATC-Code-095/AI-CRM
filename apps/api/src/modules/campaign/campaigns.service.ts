@@ -4,7 +4,7 @@ import {
   ErrorCodes,
   LeadSource,
   LeadStatus,
-} from '@ai-crm/shared'
+} from '@zhixiao-crm/shared'
 import { AuthUser } from '../../common/decorators'
 import { PrismaService } from '../../common/prisma/prisma.service'
 import { PushService } from '../notify/push.service'

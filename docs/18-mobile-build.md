@@ -127,7 +127,7 @@ VITE_API_BASE=https://crm.example.com bash scripts/sync-mobile.sh
 步骤：
 
 1. 完成第 2 步，网页包会同步到 `entry/src/main/resources/rawfile/www`。
-2. DevEco Studio → **Open** → 选择 `apps/harmony` 目录（DevEco 不接受含空格的路径，仓库在含空格的目录下时，先建符号链接：`ln -s "$PWD/apps/harmony" ~/DevEcoProjects/ai_crm_harmony`，再打开该链接），等待同步（会自动生成 `oh_modules`、`local.properties` 等，不进 git）。
+2. DevEco Studio → **Open** → 选择 `apps/harmony` 目录（DevEco 不接受含空格的路径，仓库在含空格的目录下时，先建符号链接：`ln -s "$PWD/apps/harmony" ~/DevEcoProjects/zhixiao_crm_harmony`，再打开该链接），等待同步（会自动生成 `oh_modules`、`local.properties` 等，不进 git）。
 3. **签名**：File → Project Structure → **Signing Configs**，登录华为开发者账号后勾选 **Automatically generate signature**（调试用）；正式发布在 AppGallery Connect 申请发布证书与 Profile。签名信息写入 `build-profile.json5`，**含密码，不要提交到公开仓库**。
 4. 连接鸿蒙 NEXT 真机或模拟器，点 ▶ 运行。模拟器可以不签名：命令行编译后 `hdc install -r entry/build/default/outputs/default/entry-default-unsigned.hap`，再 `hdc shell aa start -a EntryAbility -b com.itecent.crm`。调试包已开启网页调试，可用 `hdc fport` 转发 `webview_devtools_remote_<pid>` 后用 Chrome DevTools 查看。
 

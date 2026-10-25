@@ -25,10 +25,10 @@ import {
   ApprovalStatus,
   StdStageCode,
   EntityType,
-} from '@ai-crm/shared'
+} from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { PrismaService } from '../../common/prisma/prisma.service'
-import { BizException, ErrorCodes } from '@ai-crm/shared'
+import { BizException, ErrorCodes } from '@zhixiao-crm/shared'
 import { tr } from '../../common/locale'
 
 class CreateFieldDto {

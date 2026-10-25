@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { BizException, ErrorCodes, PageResult } from '@ai-crm/shared'
+import { BizException, ErrorCodes, PageResult } from '@zhixiao-crm/shared'
 import { AuthUser } from '../../common/decorators'
 import { canReadRowWithShare, scopeWhere } from '../../common/data-scope'
 import { entityVisibleAccountIds, withAccountEntityScope } from '../../common/entity-scope'

@@ -1,4 +1,4 @@
-// AI-CRM Prisma Schema — aligned with docs/04 + 12/13
+// ZhiXiao-CRM Prisma Schema — aligned with docs/04 + 12/13
 // Do not alter DB by hand; use prisma migrate
 
 generator client {
@@ -442,7 +442,7 @@ model Activity {
   checkInAt      DateTime?
   checkInAddress String?
   remindAt       DateTime?
-  source         String    @default("MANUAL") // MANUAL|AI|API|CADENCE
+  source         String    @default("MANUAL") // MANUAL|AUTO|API|CADENCE
   createdAt      DateTime  @default(now())
   createdById    String
   updatedAt      DateTime  @updatedAt

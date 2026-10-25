@@ -1,6 +1,6 @@
 import { Controller, Get, Query, Res } from '@nestjs/common'
 import type { Response } from 'express'
-import { PERMISSIONS } from '@ai-crm/shared'
+import { PERMISSIONS } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { PrismaService } from '../../common/prisma/prisma.service'
 import { tr } from '../../common/locale'

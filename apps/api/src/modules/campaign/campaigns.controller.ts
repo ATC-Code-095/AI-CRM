@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, R
 import { ApiTags } from '@nestjs/swagger'
 import type { Request } from 'express'
 import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator'
-import { PERMISSIONS } from '@ai-crm/shared'
+import { PERMISSIONS } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions, Public } from '../../common/decorators'
 import { CampaignsService } from './campaigns.service'
 

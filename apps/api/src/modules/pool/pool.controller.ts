@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common'
 import { IsOptional, IsString } from 'class-validator'
 import { ApiTags } from '@nestjs/swagger'
-import { PERMISSIONS, ErrorCodes, BizException } from '@ai-crm/shared'
+import { PERMISSIONS, ErrorCodes, BizException } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { PrismaService } from '../../common/prisma/prisma.service'
 import { tr } from '../../common/locale'

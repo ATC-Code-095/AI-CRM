@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron } from '@nestjs/schedule'
-import { BizException, ErrorCodes } from '@ai-crm/shared'
+import { BizException, ErrorCodes } from '@zhixiao-crm/shared'
 import { AuthUser } from '../../common/decorators'
 import { BASE_CURRENCY_KEY, getBaseCurrency, normalizeCurrency } from '../../common/currency'
 import { tr } from '../../common/locale'

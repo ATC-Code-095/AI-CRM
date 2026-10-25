@@ -329,7 +329,7 @@ Menu: **Platform → Integrations**.
 
 1. **New**: enter the **URL** that receives events, the **events** (comma-separated, `*` for all) and a **Secret** for signing.
 2. **Test**: sends a test event to the URL; the result is recorded in the delivery log.
-3. The receiver should verify the `X-AI-CRM-Signature` header (format `t=timestamp,v1=HMAC-SHA256`) to reject forged requests.
+3. The receiver should verify the `X-ZhiXiao-Signature` header (format `t=timestamp,v1=HMAC-SHA256`) to reject forged requests.
 4. Failed deliveries record the response code so you can troubleshoot from the log.
 
 ### 10.2 Tokens (external systems calling the API)

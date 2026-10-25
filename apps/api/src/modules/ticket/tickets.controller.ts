@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { IsIn, IsOptional, IsString, MinLength } from 'class-validator'
-import { PERMISSIONS, TicketStatus, TicketSeverity, TicketType } from '@ai-crm/shared'
+import { PERMISSIONS, TicketStatus, TicketSeverity, TicketType } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { TicketsService } from './tickets.service'
 

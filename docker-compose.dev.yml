@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: crm
       POSTGRES_PASSWORD: crm
-      POSTGRES_DB: ai_crm
+      POSTGRES_DB: zhixiao_crm
     ports:
       - "127.0.0.1:5432:5432"
     volumes:

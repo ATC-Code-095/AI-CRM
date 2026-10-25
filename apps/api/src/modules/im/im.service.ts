@@ -1,7 +1,7 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common'
 import { Cron } from '@nestjs/schedule'
 import { createHmac, randomBytes, timingSafeEqual } from 'crypto'
-import { BizException, ErrorCodes } from '@ai-crm/shared'
+import { BizException, ErrorCodes } from '@zhixiao-crm/shared'
 import { hashPassword } from '../../common/password'
 import { PrismaService } from '../../common/prisma/prisma.service'
 import { seal, unseal } from '../../common/secret-box'

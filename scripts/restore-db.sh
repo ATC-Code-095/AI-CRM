@@ -2,12 +2,12 @@
 # 恢复演练：从 dump 恢复到临时库并检查
 set -euo pipefail
 DUMP="${1:-}"
-URL="${DATABASE_URL:-postgresql://postgres:postgres@localhost:5432/ai_crm}"
-RESTORE_DB="${RESTORE_DB:-ai_crm_restore_test}"
+URL="${DATABASE_URL:-postgresql://postgres:postgres@localhost:5432/zhixiao_crm}"
+RESTORE_DB="${RESTORE_DB:-zhixiao_crm_restore_test}"
 
 if [ -z "$DUMP" ] || [ ! -f "$DUMP" ]; then
   echo "usage: scripts/restore-db.sh <dump file>" >&2
-  echo "hint: bash scripts/backup-db.sh 生成 backups/ai_crm_*.dump" >&2
+  echo "hint: bash scripts/backup-db.sh 生成 backups/zhixiao_crm_*.dump" >&2
   exit 1
 fi
 

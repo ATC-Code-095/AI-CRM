@@ -11,11 +11,11 @@ services:
     environment:
       POSTGRES_USER: crm
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?请在 .env.docker 中设置 POSTGRES_PASSWORD}
-      POSTGRES_DB: ai_crm
+      POSTGRES_DB: zhixiao_crm
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U crm -d ai_crm"]
+      test: ["CMD-SHELL", "pg_isready -U crm -d zhixiao_crm"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -38,7 +38,7 @@ services:
     restart: unless-stopped
     environment:
       PORT: 3001
-      DATABASE_URL: postgresql://crm:${POSTGRES_PASSWORD}@postgres:5432/ai_crm
+      DATABASE_URL: postgresql://crm:${POSTGRES_PASSWORD}@postgres:5432/zhixiao_crm
       REDIS_URL: redis://redis:6379
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?请在 .env.docker 中设置 JWT_ACCESS_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?请在 .env.docker 中设置 JWT_REFRESH_SECRET}

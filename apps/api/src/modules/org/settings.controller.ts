@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Patch, Put, Query } from '@nestjs/common'
 import { IsObject, IsOptional, IsString, MinLength } from 'class-validator'
-import { BizException, ErrorCodes, PERMISSIONS } from '@ai-crm/shared'
+import { BizException, ErrorCodes, PERMISSIONS } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { PrismaService } from '../../common/prisma/prisma.service'
 

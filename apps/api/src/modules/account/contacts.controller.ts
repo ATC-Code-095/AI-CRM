@@ -2,11 +2,11 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Res } from '@
 import { IsOptional, IsString } from 'class-validator'
 import type { Response } from 'express'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { PERMISSIONS } from '@ai-crm/shared'
+import { PERMISSIONS } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { scopeWhere } from '../../common/data-scope'
 import { PrismaService } from '../../common/prisma/prisma.service'
-import { BizException, ErrorCodes } from '@ai-crm/shared'
+import { BizException, ErrorCodes } from '@zhixiao-crm/shared'
 import { tr } from '../../common/locale'
 
 class UpdateContactDto {

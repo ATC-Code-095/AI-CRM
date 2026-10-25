@@ -1,4 +1,4 @@
-import { harmonyPushAvailable, nativePushAvailable, registerHarmonyPush, registerNativePush, type PushData } from '@ai-crm/mobile-bridge'
+import { harmonyPushAvailable, nativePushAvailable, registerHarmonyPush, registerNativePush, type PushData } from '@zhixiao-crm/mobile-bridge'
 import { api } from '../api/client'
 
 const TOKEN_KEY = 'push_token'

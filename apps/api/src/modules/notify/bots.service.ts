@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { createHmac, randomUUID } from 'crypto'
-import { BizException, ErrorCodes } from '@ai-crm/shared'
+import { BizException, ErrorCodes } from '@zhixiao-crm/shared'
 import { PrismaService } from '../../common/prisma/prisma.service'
 import { tr } from '../../common/locale'
 

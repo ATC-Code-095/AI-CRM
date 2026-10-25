@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { ApiEnvelope } from '@ai-crm/shared'
+import { ApiEnvelope } from '@zhixiao-crm/shared'
 import { currentLocale, localizeSystemLabels } from '../locale'
 
 @Injectable()

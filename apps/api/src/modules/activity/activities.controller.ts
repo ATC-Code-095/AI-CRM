@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { IsIn, IsOptional, IsString, MinLength } from 'class-validator'
-import { ActivityType, PERMISSIONS } from '@ai-crm/shared'
+import { ActivityType, PERMISSIONS } from '@zhixiao-crm/shared'
 import { AuthUser, CurrentUser, Permissions } from '../../common/decorators'
 import { ActivitiesService } from './activities.service'
 

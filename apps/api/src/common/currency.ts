@@ -1,4 +1,4 @@
-import { BizException, ErrorCodes } from '@ai-crm/shared'
+import { BizException, ErrorCodes } from '@zhixiao-crm/shared'
 import type { Prisma, PrismaClient } from '@prisma/client'
 import { tr } from './locale'
 
